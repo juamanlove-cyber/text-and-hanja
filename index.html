@@ -6,714 +6,417 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Text & Hanja">
-<title>Text & Hanja - Prof. KIMJUA의 한자 학습 도구</title>
+<title>Text & Hanja 3.0 - Prof. KIMJUA의 완전한 한자 학습 플랫폼</title>
 <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
     body {
         background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+        display: flex; justify-content: center; align-items: center;
+        min-height: 100vh; font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
         padding: 20px;
     }
     
     .phone {
-        width: 375px;
-        height: 812px;
-        background: #FDFBF7;
-        border-radius: 30px;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
+        width: 375px; height: 812px; background: #FDFBF7;
+        border-radius: 30px; box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        overflow: hidden; display: flex; flex-direction: column;
     }
     
     .header {
-        height: 64px;
-        background: #F7F2EB;
-        border-bottom: 1px solid #e0e0e0;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 20px;
-        flex-shrink: 0;
+        height: 64px; background: #F7F2EB; border-bottom: 1px solid #e0e0e0;
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0 20px; flex-shrink: 0;
     }
     
-    .title {
-        font-size: 18px;
-        font-weight: bold;
-        color: #333;
-    }
+    .title { font-size: 18px; font-weight: bold; color: #333; }
     
-    .toggle-area {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-size: 12px;
-        color: #666;
-    }
+    .toggle-area { display: flex; align-items: center; gap: 10px; font-size: 12px; color: #666; }
     
     .switch {
-        width: 44px;
-        height: 22px;
-        background: #ccc;
-        border-radius: 11px;
-        position: relative;
-        cursor: pointer;
-        transition: 0.3s;
+        width: 44px; height: 22px; background: #ccc; border-radius: 11px;
+        position: relative; cursor: pointer; transition: 0.3s;
     }
-    
     .switch.on { background: #5DBB96; }
-    
     .switch-knob {
-        width: 18px;
-        height: 18px;
-        background: white;
-        border-radius: 50%;
-        position: absolute;
-        top: 2px;
-        left: 2px;
-        transition: 0.3s;
+        width: 18px; height: 18px; background: white; border-radius: 50%;
+        position: absolute; top: 2px; left: 2px; transition: 0.3s;
         box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
-    
     .switch.on .switch-knob { left: 24px; }
     
-    .content {
-        flex: 1;
-        overflow-y: auto;
-        padding: 24px;
-        font-size: 17px;
-        line-height: 2;
-        color: #333;
-        padding-bottom: 50px;
-        display: none;
+    .content { 
+        flex: 1; overflow-y: auto; padding: 24px; font-size: 17px; 
+        line-height: 2; color: #333; display: none; padding-bottom: 50px;
     }
-    
     .content.active { display: block; }
     
-    .article-title {
-        font-size: 20px;
-        font-weight: bold;
-        margin-bottom: 8px;
-        line-height: 1.4;
+    /* 홈 화면 */
+    .welcome-section {
+        text-align: center; margin-bottom: 32px; padding: 24px;
+        background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+        border-radius: 16px;
+    }
+    .welcome-icon { font-size: 48px; margin-bottom: 12px; }
+    .welcome-title { font-size: 20px; font-weight: bold; margin-bottom: 8px; color: #333; }
+    .welcome-desc { font-size: 14px; color: #666; line-height: 1.6; }
+    
+    .section-divider {
+        border-bottom: 2px solid #f1f1f1; margin: 32px 0; padding-bottom: 16px;
     }
     
-    .article-meta {
-        font-size: 12px;
-        color: #999;
-        margin-bottom: 24px;
+    .text-input {
+        width: 100%; height: 180px; padding: 16px; border: 2px solid #e0e0e0;
+        border-radius: 12px; font-size: 15px; line-height: 1.6; resize: vertical;
+        font-family: inherit; transition: 0.3s; margin-bottom: 12px;
+    }
+    .text-input:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
+    
+    .action-btn {
+        width: 100%; padding: 16px; border: none; border-radius: 12px;
+        font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-bottom: 8px;
+    }
+    .action-btn.primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;
+    }
+    .action-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102,126,234,0.4); }
+    .action-btn.secondary { background: #f8f9fa; color: #666; border: 1px solid #ddd; }
+    .action-btn.historical { 
+        background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%); color: white;
     }
     
+    /* 역사 텍스트 목록 */
+    .historical-item {
+        background: white; padding: 16px; border-radius: 12px; margin-bottom: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08); cursor: pointer; transition: 0.3s;
+        border-left: 4px solid #8B4513;
+    }
+    .historical-item:hover { transform: translateX(4px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+    .historical-title { font-size: 16px; font-weight: bold; margin-bottom: 4px; color: #333; }
+    .historical-meta { font-size: 13px; color: #8B4513; margin-bottom: 4px; }
+    .historical-desc { font-size: 12px; color: #666; line-height: 1.4; }
+    
+    /* 역사 읽기 화면 */
+    .classic-text {
+        font-family: 'Batang', 'Times New Roman', serif; font-size: 18px;
+        line-height: 2.2; color: #2c2c2c; text-align: justify;
+        background: #fffef7; padding: 20px; border-radius: 12px;
+        border: 1px solid #e8e0d0; margin-bottom: 16px;
+    }
+    
+    .mode-indicator {
+        background: #8B4513; color: white; padding: 8px 16px; border-radius: 20px;
+        font-size: 12px; margin-bottom: 16px; text-align: center; font-weight: bold;
+    }
+    
+    .historical-context {
+        margin-bottom: 24px; padding: 16px; 
+        background: rgba(139,69,19,0.1); border-radius: 12px; 
+        border-left: 4px solid #8B4513;
+    }
+    
+    .modern-translation {
+        background: #f0f4f8; padding: 16px; border-radius: 12px; margin-top: 16px;
+        border-left: 4px solid #5DBB96; font-size: 15px; color: #444; line-height: 1.6;
+        display: none;
+    }
+    .modern-translation.show { display: block; animation: fadeIn 0.5s; }
+    
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    
+    /* 읽기 화면 공통 */
+    .article-title { font-size: 20px; font-weight: bold; margin-bottom: 8px; line-height: 1.4; }
+    .article-meta { font-size: 12px; color: #999; margin-bottom: 24px; }
     .content p { margin-bottom: 16px; }
     
+    /* 한자어 스타일 */
     .hanja-word {
-        cursor: pointer;
-        padding: 2px 4px;
-        border-radius: 3px;
-        transition: 0.3s;
-        position: relative;
-        border-bottom: 1px dashed #aaa;
+        cursor: pointer; padding: 2px 4px; border-radius: 3px; transition: 0.3s;
+        position: relative; border-bottom: 1px dashed #aaa;
     }
-    
-    .hanja-word:hover {
-        background: rgba(255, 246, 209, 0.7);
-        transform: translateY(-1px);
+    .hanja-word:hover { background: rgba(255,246,209,0.7); transform: translateY(-1px); }
+    .hanja-word.saved { 
+        background: rgba(93,187,150,0.2); border-bottom: 2px solid #5DBB96; 
     }
-    
-    .hanja-word.saved {
-        background: rgba(93, 187, 150, 0.2);
-        border-bottom: 2px solid #5DBB96;
-        position: relative;
+    .hanja-word.saved::after { 
+        content: '⭐'; position: absolute; top: -8px; right: -8px; 
+        font-size: 12px; color: #5DBB96;
     }
-    
-    .hanja-word.saved::after {
-        content: '⭐';
-        position: absolute;
-        top: -8px;
-        right: -8px;
-        font-size: 12px;
-        color: #5DBB96;
+    .hanja-word.individual-active { 
+        color: #d63031; font-weight: 600; border-bottom: none; 
+        background: rgba(214,48,49,0.1); 
     }
-    
-    .hanja-word.individual-active {
-        color: #d63031;
-        font-weight: 600;
-        border-bottom: none;
-        background: rgba(214, 48, 49, 0.1);
-    }
-    
-    .hanja-mode .hanja-word {
-        color: #d63031;
-        font-weight: 600;
-        border-bottom: none;
-    }
+    .hanja-mode .hanja-word { color: #d63031; font-weight: 600; border-bottom: none; }
     
     .highlight {
         background: linear-gradient(120deg, #FFF6D1 0%, #FFE55C 100%);
-        padding: 3px 6px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-weight: 600;
+        padding: 3px 6px; border-radius: 4px; cursor: pointer; font-weight: 600;
         animation: pulse 2s infinite;
     }
-    
     @keyframes pulse {
         0%, 100% { box-shadow: 0 0 0 0 rgba(255, 229, 92, 0.4); }
         50% { box-shadow: 0 0 0 8px rgba(255, 229, 92, 0); }
     }
     
-    /* 단어장 스타일 */
-    .vocabulary-container {
-        padding: 24px;
-    }
-    
-    .vocab-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-    }
-    
-    .vocab-count {
-        font-size: 14px;
-        color: #666;
-        background: #f8f9fa;
-        padding: 8px 16px;
-        border-radius: 20px;
+    /* 단어장 */
+    .vocab-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .vocab-count { 
+        font-size: 14px; color: #666; background: #f8f9fa; 
+        padding: 8px 16px; border-radius: 20px; 
     }
     
     .start-quiz-btn {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border: none;
-        padding: 12px 24px;
-        border-radius: 25px;
-        font-weight: bold;
-        cursor: pointer;
-        font-size: 16px;
-        transition: 0.3s;
-        width: 100%;
-        margin-bottom: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;
+        border: none; padding: 12px 24px; border-radius: 25px; font-weight: bold;
+        cursor: pointer; font-size: 16px; width: 100%; margin-bottom: 20px; transition: 0.3s;
     }
+    .start-quiz-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102,126,234,0.4); }
+    .start-quiz-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; box-shadow: none; }
     
-    .start-quiz-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    .quiz-mode-selector { display: flex; gap: 8px; margin-bottom: 20px; }
+    .quiz-mode-btn {
+        flex: 1; padding: 12px; border: 2px solid #e0e0e0; background: white;
+        border-radius: 12px; cursor: pointer; font-size: 13px; transition: 0.3s; text-align: center;
     }
-    
-    .start-quiz-btn:disabled {
-        background: #ccc;
-        cursor: not-allowed;
-        transform: none;
-        box-shadow: none;
-    }
-    
-    .vocab-list {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
+    .quiz-mode-btn.active { border-color: #667eea; background: rgba(102,126,234,0.1); font-weight: bold; }
     
     .vocab-item {
-        background: white;
-        padding: 16px;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        transition: 0.3s;
+        background: white; padding: 16px; border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08); display: flex;
+        justify-content: space-between; align-items: center; margin-bottom: 12px; transition: 0.3s;
+    }
+    .vocab-item:hover { transform: translateX(4px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+    .vocab-info { flex: 1; }
+    .vocab-hanja { font-size: 20px; font-weight: bold; color: #d63031; margin-bottom: 4px; }
+    .vocab-korean { font-size: 14px; color: #666; }
+    .vocab-delete { 
+        background: #f8f9fa; border: none; padding: 8px 12px; border-radius: 8px; 
+        cursor: pointer; color: #999; font-size: 12px; transition: 0.3s; 
+    }
+    .vocab-delete:hover { background: #ffe0e0; color: #d63031; }
+    
+    .empty-vocab { text-align: center; padding: 60px 20px; color: #999; }
+    
+    /* 퀴즈 */
+    .quiz-container { padding: 24px; display: flex; flex-direction: column; height: 100%; }
+    .quiz-header { 
+        display: flex; justify-content: space-between; align-items: center; 
+        margin-bottom: 24px; padding-bottom: 16px; border-bottom: 2px solid #f1f1f1; 
+    }
+    .quiz-progress { font-size: 14px; color: #666; font-weight: bold; }
+    .quiz-score { 
+        font-size: 14px; color: #5DBB96; font-weight: bold; 
+        background: rgba(93,187,150,0.1); padding: 6px 12px; border-radius: 12px; 
     }
     
-    .vocab-item:hover {
-        transform: translateX(4px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-    }
+    .quiz-question { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+    .question-text { text-align: center; margin-bottom: 32px; }
+    .question-label { font-size: 14px; color: #999; margin-bottom: 12px; }
+    .question-word { font-size: 48px; font-weight: bold; color: #333; margin-bottom: 8px; }
+    .question-hint { font-size: 14px; color: #666; }
+    .oracle-display { font-size: 96px; margin: 24px 0; filter: sepia(0.5); text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
     
-    .vocab-info {
-        flex: 1;
-    }
-    
-    .vocab-hanja {
-        font-size: 20px;
-        font-weight: bold;
-        color: #d63031;
-        margin-bottom: 4px;
-    }
-    
-    .vocab-korean {
-        font-size: 14px;
-        color: #666;
-    }
-    
-    .vocab-delete {
-        background: #f8f9fa;
-        border: none;
-        padding: 8px 12px;
-        border-radius: 8px;
-        cursor: pointer;
-        color: #999;
-        font-size: 12px;
-        transition: 0.3s;
-    }
-    
-    .vocab-delete:hover {
-        background: #ffe0e0;
-        color: #d63031;
-    }
-    
-    .empty-vocab {
-        text-align: center;
-        padding: 60px 20px;
-        color: #999;
-    }
-    
-    .empty-vocab-icon {
-        font-size: 48px;
-        margin-bottom: 16px;
-    }
-    
-    /* 퀴즈 스타일 */
-    .quiz-container {
-        padding: 24px;
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-    }
-    
-    .quiz-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 24px;
-        padding-bottom: 16px;
-        border-bottom: 2px solid #f1f1f1;
-    }
-    
-    .quiz-progress {
-        font-size: 14px;
-        color: #666;
-        font-weight: bold;
-    }
-    
-    .quiz-score {
-        font-size: 14px;
-        color: #5DBB96;
-        font-weight: bold;
-        background: rgba(93, 187, 150, 0.1);
-        padding: 6px 12px;
-        border-radius: 12px;
-    }
-    
-    .quiz-question {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-    
-    .question-text {
-        text-align: center;
-        margin-bottom: 32px;
-    }
-    
-    .question-label {
-        font-size: 14px;
-        color: #999;
-        margin-bottom: 12px;
-    }
-    
-    .question-word {
-        font-size: 48px;
-        font-weight: bold;
-        color: #333;
-        margin-bottom: 8px;
-    }
-    
-    .question-hint {
-        font-size: 14px;
-        color: #666;
-    }
-    
-    .quiz-options {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        margin-bottom: 24px;
-    }
-    
+    .quiz-options { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
     .quiz-option {
-        background: white;
-        border: 2px solid #e0e0e0;
-        padding: 20px;
-        border-radius: 16px;
-        cursor: pointer;
-        transition: all 0.3s;
-        text-align: center;
-        font-size: 18px;
-        font-weight: 500;
+        background: white; border: 2px solid #e0e0e0; padding: 20px; border-radius: 16px;
+        cursor: pointer; transition: all 0.3s; text-align: center; font-size: 18px; font-weight: 500;
+    }
+    .quiz-option:hover { 
+        border-color: #667eea; background: rgba(102,126,234,0.05); 
+        transform: translateY(-2px); 
+    }
+    .quiz-option.correct { 
+        border-color: #5DBB96; background: rgba(93,187,150,0.1); 
+        animation: correctPulse 0.5s; 
+    }
+    .quiz-option.wrong { 
+        border-color: #d63031; background: rgba(214,48,49,0.1); 
+        animation: shake 0.5s; 
     }
     
-    .quiz-option:hover {
-        border-color: #667eea;
-        background: rgba(102, 126, 234, 0.05);
-        transform: translateY(-2px);
+    @keyframes correctPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+    @keyframes shake { 
+        0%,100% { transform: translateX(0); } 
+        25% { transform: translateX(-10px); } 
+        75% { transform: translateX(10px); } 
     }
     
-    .quiz-option.correct {
-        border-color: #5DBB96;
-        background: rgba(93, 187, 150, 0.1);
-        animation: correctPulse 0.5s;
-    }
-    
-    .quiz-option.wrong {
-        border-color: #d63031;
-        background: rgba(214, 48, 49, 0.1);
-        animation: shake 0.5s;
-    }
-    
-    @keyframes correctPulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.05); }
-    }
-    
-    @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        25% { transform: translateX(-10px); }
-        75% { transform: translateX(10px); }
-    }
-    
-    .quiz-result {
-        text-align: center;
-        padding: 40px 20px;
-    }
-    
-    .result-icon {
-        font-size: 64px;
-        margin-bottom: 16px;
-    }
-    
-    .result-title {
-        font-size: 24px;
-        font-weight: bold;
-        margin-bottom: 12px;
-        color: #333;
-    }
-    
-    .result-stats {
-        font-size: 16px;
-        color: #666;
-        margin-bottom: 32px;
-        line-height: 1.8;
-    }
-    
-    .result-actions {
-        display: flex;
-        gap: 12px;
-    }
-    
-    .result-btn {
-        flex: 1;
-        padding: 16px;
-        border: none;
-        border-radius: 12px;
-        font-weight: bold;
-        cursor: pointer;
-        font-size: 14px;
-        transition: 0.3s;
-    }
-    
-    .result-btn.primary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-    }
-    
-    .result-btn.secondary {
-        background: #f8f9fa;
-        color: #666;
-    }
-    
+    /* 모달 */
     .modal {
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background: rgba(0,0,0,0.6);
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-        backdrop-filter: blur(3px);
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center;
+        z-index: 1000; backdrop-filter: blur(3px);
     }
-    
     .modal.show { display: flex; }
-    
     .modal-content {
-        background: white;
-        width: 340px;
-        max-width: 90vw;
-        border-radius: 20px;
-        padding: 28px;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        animation: slideUp 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        background: white; width: 340px; max-width: 90vw; max-height: 90vh; overflow-y: auto;
+        border-radius: 20px; padding: 28px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        animation: slideUp 0.4s cubic-bezier(0.68,-0.55,0.265,1.55);
+    }
+    @keyframes slideUp { 
+        from { transform: translateY(100px) scale(0.9); opacity: 0; } 
+        to { transform: translateY(0) scale(1); opacity: 1; } 
     }
     
-    @keyframes slideUp {
-        from { transform: translateY(100px) scale(0.9); opacity: 0; }
-        to { transform: translateY(0) scale(1); opacity: 1; }
-    }
+    .modal-header { text-align: center; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 2px solid #f1f1f1; }
+    .modal-hanja { font-size: 42px; font-weight: bold; color: #d63031; margin-bottom: 8px; }
+    .modal-korean { font-size: 16px; color: #666; font-weight: 500; }
     
-    .modal-header {
-        text-align: center;
-        margin-bottom: 24px;
-        padding-bottom: 20px;
-        border-bottom: 2px solid #f1f1f1;
+    .language-tabs { 
+        display: flex; gap: 8px; margin-bottom: 16px; 
+        border-bottom: 2px solid #f1f1f1; padding-bottom: 8px; 
     }
-    
-    .modal-hanja {
-        font-size: 42px;
-        font-weight: bold;
-        color: #d63031;
-        margin-bottom: 8px;
+    .lang-tab {
+        padding: 8px 12px; border: none; background: transparent; cursor: pointer;
+        font-size: 13px; color: #999; border-bottom: 2px solid transparent; transition: 0.3s;
     }
-    
-    .modal-korean {
-        font-size: 16px;
-        color: #666;
-        font-weight: 500;
-    }
+    .lang-tab.active { color: #667eea; border-bottom-color: #667eea; font-weight: bold; }
     
     .modal-body { margin-bottom: 24px; }
-    
     .info-section { margin-bottom: 20px; }
-    
-    .info-label {
-        font-weight: bold;
-        color: #444;
-        font-size: 14px;
-        margin-bottom: 8px;
-    }
-    
+    .info-label { font-weight: bold; color: #444; font-size: 14px; margin-bottom: 8px; }
     .info-text {
-        color: #333;
-        font-size: 15px;
-        line-height: 1.6;
-        background: #f8f9fa;
-        padding: 12px;
-        border-radius: 8px;
-        border-left: 4px solid #5DBB96;
+        color: #333; font-size: 15px; line-height: 1.6; background: #f8f9fa;
+        padding: 12px; border-radius: 8px; border-left: 4px solid #5DBB96;
     }
     
-    .char-breakdown {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-    }
-    
+    .char-breakdown { display: flex; gap: 8px; flex-wrap: wrap; }
     .char-item {
-        flex: 1;
-        min-width: 80px;
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        padding: 12px 8px;
-        border-radius: 10px;
-        text-align: center;
-        font-size: 13px;
+        flex: 1; min-width: 70px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 12px 8px; border-radius: 10px; text-align: center; font-size: 13px;
     }
+    .char-item .char { font-size: 24px; font-weight: bold; color: #d63031; display: block; margin-bottom: 6px; }
     
-    .char-item .char {
-        font-size: 24px;
-        font-weight: bold;
-        color: #d63031;
-        display: block;
-        margin-bottom: 6px;
-    }
-    
-    .modal-footer {
-        display: flex;
-        gap: 12px;
-    }
-    
+    .modal-footer { display: flex; gap: 12px; }
     .btn {
-        flex: 1;
-        padding: 14px 20px;
-        border: none;
-        border-radius: 12px;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: 600;
-        transition: all 0.3s;
-        text-decoration: none;
-        text-align: center;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
+        flex: 1; padding: 14px 20px; border: none; border-radius: 12px;
+        cursor: pointer; font-size: 14px; font-weight: 600; transition: 0.3s; text-align: center;
     }
-    
-    .btn-save {
-        background: linear-gradient(135deg, #5DBB96 0%, #4CAF50 100%);
-        color: white;
-    }
-    
-    .btn-save.saved {
-        background: #ccc;
-        cursor: not-allowed;
-    }
-    
-    .btn-naver {
-        background: linear-gradient(135deg, #03C75A 0%, #00B04F 100%);
-        color: white;
-    }
-    
-    .btn-close {
-        background: #f1f3f4;
-        color: #5f6368;
-    }
+    .btn-save { background: linear-gradient(135deg, #5DBB96 0%, #4CAF50 100%); color: white; }
+    .btn-save.saved { background: #ccc; cursor: not-allowed; }
+    .btn-naver { background: linear-gradient(135deg, #03C75A 0%, #00B04F 100%); color: white; }
+    .btn-close { background: #f1f3f4; color: #5f6368; }
     
     .nav {
-        height: 70px;
-        background: #FDFBF7;
-        border-top: 1px solid #e0e0e0;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        flex-shrink: 0;
+        height: 70px; background: #FDFBF7; border-top: 1px solid #e0e0e0;
+        display: flex; justify-content: space-around; align-items: center; flex-shrink: 0;
     }
-    
     .nav-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 4px;
-        font-size: 12px;
-        color: #999;
-        cursor: pointer;
-        transition: 0.3s;
-        position: relative;
+        display: flex; flex-direction: column; align-items: center; gap: 4px;
+        font-size: 12px; color: #999; cursor: pointer; transition: 0.3s; position: relative;
     }
-    
     .nav-item.active { color: #333; }
     .nav-item:hover { color: #5DBB96; }
-    
     .nav-badge {
-        position: absolute;
-        top: -4px;
-        right: 8px;
-        background: #d63031;
-        color: white;
-        font-size: 10px;
-        padding: 2px 6px;
-        border-radius: 10px;
-        font-weight: bold;
+        position: absolute; top: -4px; right: 8px; background: #d63031; color: white;
+        font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: bold;
     }
     
     .developer-credit {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: rgba(253, 251, 247, 0.95);
-        text-align: center;
-        padding: 8px;
-        font-size: 11px;
-        color: #666;
-        border-top: 1px solid #eee;
-        z-index: 1001;
+        position: fixed; bottom: 0; left: 0; right: 0; background: rgba(253,251,247,0.95);
+        text-align: center; padding: 8px; font-size: 11px; color: #666;
+        border-top: 1px solid #eee; z-index: 1001;
     }
-    
-    .developer-credit a {
-        color: #5DBB96;
-        text-decoration: none;
-    }
+    .developer-credit a { color: #5DBB96; text-decoration: none; }
 </style>
 </head>
 <body>
 
 <div class="phone">
     <div class="header">
-        <div class="title">Text & Hanja</div>
+        <div class="title">Text & Hanja 3.0</div>
         <div class="toggle-area">
-            <span>전체 한자 변환</span>
+            <span id="toggleLabel">한자 변환</span>
             <div class="switch" id="toggleBtn">
                 <div class="switch-knob"></div>
             </div>
         </div>
     </div>
     
-    <!-- 독서 화면 -->
-    <div class="content active" id="readingContent">
-        <div class="article-title">
-            디지털 시대의 <span class="highlight" onclick="showDetail('문해력')">문해력</span>,<br>
-            우리가 놓치고 있는 것들
+    <!-- 홈 화면 -->
+    <div class="content active" id="homeContent">
+        <div class="welcome-section">
+            <div class="welcome-icon">🌉</div>
+            <div class="welcome-title">과거와 현재를 잇는 다리</div>
+            <div class="welcome-desc">
+                현대 뉴스로 한자를 배우고<br>
+                역사 속 한자 텍스트를 현대어로 읽어보세요
+            </div>
         </div>
-        <div class="article-meta">2024년 3월 · Prof. KIMJUA</div>
         
-        <p>
-            현대 <span class="hanja-word" data-korean="사회" data-hanja="社會" onclick="toggleWord(this)">사회</span>에서 
-            <span class="hanja-word" data-korean="정보" data-hanja="情報" onclick="toggleWord(this)">정보</span>의 
-            <span class="hanja-word" data-korean="홍수" data-hanja="洪水" onclick="toggleWord(this)">홍수</span>는 
-            <span class="hanja-word" data-korean="역설적" data-hanja="逆說的" onclick="toggleWord(this)">역설적</span>으로 깊이 있는 
-            <span class="hanja-word" data-korean="사고" data-hanja="思考" onclick="toggleWord(this)">사고</span>를 
-            방해하곤 합니다. 우리는 매일 수많은 텍스트를 마주하지만, 그것을 
-            <span class="hanja-word" data-korean="진정" data-hanja="眞正" onclick="toggleWord(this)">진정</span>으로 
-            <span class="hanja-word" data-korean="소화" data-hanja="消化" onclick="toggleWord(this)">소화</span>하고 있는지에 대해서는 
-            <span class="hanja-word" data-korean="의문" data-hanja="疑問" onclick="toggleWord(this)">의문</span>이 남습니다.
-        </p>
+        <!-- 현대 텍스트 입력 섹션 -->
+        <div style="margin-bottom: 32px;">
+            <h3 style="margin-bottom: 16px; color: #333; display: flex; align-items: center; gap: 8px;">
+                📰 현대 텍스트 → 한자 학습
+            </h3>
+            <textarea id="userTextInput" class="text-input" 
+                      placeholder="뉴스 기사나 텍스트를 붙여넣으세요..."></textarea>
+            <div style="display: flex; gap: 8px;">
+                <button class="action-btn primary" onclick="processUserText()" style="flex: 2;">
+                    ✨ 한자 학습 모드로 변환
+                </button>
+                <button class="action-btn secondary" onclick="loadSampleText()">
+                    📄 샘플
+                </button>
+            </div>
+        </div>
         
-        <p>
-            특히 <span class="hanja-word" data-korean="최근" data-hanja="最近" onclick="toggleWord(this)">최근</span> 
-            <span class="hanja-word" data-korean="교육" data-hanja="教育" onclick="toggleWord(this)">교육</span>계와 
-            <span class="hanja-word" data-korean="학계" data-hanja="學界" onclick="toggleWord(this)">학계</span>에서 
-            <span class="hanja-word" data-korean="화두" data-hanja="話頭" onclick="toggleWord(this)">화두</span>가 되고 있는 것은 바로 
-            문해력의 <span class="hanja-word" data-korean="저하" data-hanja="低下" onclick="toggleWord(this)">저하</span> 
-            <span class="hanja-word" data-korean="문제" data-hanja="問題" onclick="toggleWord(this)">문제</span>입니다. 
-            단순히 글자를 읽을 줄 아는 것을 넘어, 텍스트의 
-            <span class="hanja-word" data-korean="이면" data-hanja="裏面" onclick="toggleWord(this)">이면</span>에 담긴 
-            <span class="hanja-word" data-korean="맥락" data-hanja="脈絡" onclick="toggleWord(this)">맥락</span>과 저자의 
-            <span class="hanja-word" data-korean="의도" data-hanja="意圖" onclick="toggleWord(this)">의도</span>를 파악하는 
-            <span class="hanja-word" data-korean="능력" data-hanja="能力" onclick="toggleWord(this)">능력</span>은 점차 
-            <span class="hanja-word" data-korean="희석" data-hanja="稀釋" onclick="toggleWord(this)">희석</span>되고 있습니다.
-        </p>
+        <div class="section-divider"></div>
         
-        <p>
-            <span class="hanja-word" data-korean="한자어" data-hanja="漢字語" onclick="toggleWord(this)">한자어</span>에 대한 
-            <span class="hanja-word" data-korean="이해" data-hanja="理解" onclick="toggleWord(this)">이해</span> 
-            <span class="hanja-word" data-korean="부족" data-hanja="不足" onclick="toggleWord(this)">부족</span>은 이러한 
-            <span class="hanja-word" data-korean="현상" data-hanja="現象" onclick="toggleWord(this)">현상</span>을 
-            <span class="hanja-word" data-korean="가속화" data-hanja="加速化" onclick="toggleWord(this)">가속화</span>합니다. 
-            우리말 <span class="hanja-word" data-korean="어휘" data-hanja="語彙" onclick="toggleWord(this)">어휘</span>의 
-            <span class="hanja-word" data-korean="상당수" data-hanja="相當數" onclick="toggleWord(this)">상당수</span>가 
-            한자어에 뿌리를 두고 있음에도 불구하고, 
-            <span class="hanja-word" data-korean="표음문자" data-hanja="表音文字" onclick="toggleWord(this)">표음문자</span>인 
-            한글 <span class="hanja-word" data-korean="전용" data-hanja="專用" onclick="toggleWord(this)">전용</span> 
-            <span class="hanja-word" data-korean="표기" data-hanja="表記" onclick="toggleWord(this)">표기</span>가 
-            <span class="hanja-word" data-korean="정착" data-hanja="定着" onclick="toggleWord(this)">정착</span>되면서 
-            <span class="hanja-word" data-korean="표의문자" data-hanja="表意文字" onclick="toggleWord(this)">표의문자</span>로서의 
-            <span class="hanja-word" data-korean="의미" data-hanja="意味" onclick="toggleWord(this)">의미</span> 
-            <span class="hanja-word" data-korean="연결" data-hanja="連結" onclick="toggleWord(this)">연결</span>고리가 약해진 것입니다.
-        </p>
+        <!-- 역사 텍스트 섹션 -->
+        <div>
+            <h3 style="margin-bottom: 16px; color: #333; display: flex; align-items: center; gap: 8px;">
+                📜 역사 텍스트 → 현대어 이해
+            </h3>
+            <div id="historicalList"></div>
+        </div>
+    </div>
+    
+    <!-- 현대 텍스트 읽기 화면 -->
+    <div class="content" id="readingContent">
+        <div id="articleContainer"></div>
+        <button class="action-btn secondary" onclick="backToHome()" style="margin-top: 24px;">
+            🏠 홈으로 돌아가기
+        </button>
+    </div>
+    
+    <!-- 역사 텍스트 읽기 화면 -->
+    <div class="content" id="historicalReadingContent">
+        <div class="mode-indicator" id="modeIndicator">📜 원문 모드</div>
+        <div id="historicalContainer"></div>
+        <div style="display: flex; gap: 12px; margin-top: 20px;">
+            <button class="action-btn historical" onclick="toggleHistoricalMode()" style="flex: 1; margin: 0;">
+                🔄 보기 모드 변경
+            </button>
+            <button class="action-btn secondary" onclick="toggleTranslation()" style="flex: 1; margin: 0;">
+                📖 현대어 풀이
+            </button>
+        </div>
+        <button class="action-btn secondary" onclick="backToHome()" style="margin-top: 12px;">
+            📚 다른 텍스트 보기
+        </button>
     </div>
     
     <!-- 단어장 화면 -->
     <div class="content" id="vocabularyContent">
-        <div class="vocabulary-container">
-            <div class="vocab-header">
-                <h2 style="font-size: 20px; font-weight: bold;">내 단어장</h2>
-                <div class="vocab-count" id="vocabCount">0개</div>
-            </div>
-            
-            <button class="start-quiz-btn" id="startQuizBtn" onclick="startQuiz()" disabled>
-                🎮 퀴즈 시작하기 (최소 3개 필요)
-            </button>
-            
-            <div class="vocab-list" id="vocabList">
-                <div class="empty-vocab">
-                    <div class="empty-vocab-icon">📚</div>
-                    <div>아직 저장된 단어가 없습니다.<br>독서 화면에서 한자어를 클릭하고<br>"단어장 저장" 버튼을 눌러보세요!</div>
-                </div>
+        <div class="vocab-header">
+            <h2 style="font-size: 20px; font-weight: bold;">내 단어장</h2>
+            <div class="vocab-count" id="vocabCount">0개</div>
+        </div>
+        
+        <div class="quiz-mode-selector">
+            <div class="quiz-mode-btn active" data-mode="basic">🎯 기본 퀴즈</div>
+            <div class="quiz-mode-btn" data-mode="oracle">🦴 갑골문 퀴즈</div>
+        </div>
+        
+        <button class="start-quiz-btn" id="startQuizBtn" onclick="startQuiz()" disabled>
+            🎮 퀴즈 시작하기 (최소 3개 필요)
+        </button>
+        
+        <div id="vocabList">
+            <div class="empty-vocab">
+                <div style="font-size: 48px; margin-bottom: 16px;">📚</div>
+                <div>아직 저장된 단어가 없습니다.<br>텍스트를 읽고 한자어를 저장해보세요!</div>
             </div>
         </div>
     </div>
@@ -725,23 +428,12 @@
                 <div class="quiz-progress" id="quizProgress">1 / 5</div>
                 <div class="quiz-score" id="quizScore">🏆 0점</div>
             </div>
-            
-            <div class="quiz-question">
-                <div class="question-text">
-                    <div class="question-label">다음 한글의 한자 표기는?</div>
-                    <div class="question-word" id="questionWord">사회</div>
-                    <div class="question-hint" id="questionHint">사람들이 모여 이루는 집단</div>
-                </div>
-                
-                <div class="quiz-options" id="quizOptions">
-                    <!-- 동적 생성 -->
-                </div>
-            </div>
+            <div class="quiz-question" id="quizQuestionArea"></div>
         </div>
     </div>
     
     <div class="nav">
-        <div class="nav-item active" data-screen="reading">🏠<br>홈</div>
+        <div class="nav-item active" data-screen="home">🏠<br>홈</div>
         <div class="nav-item" data-screen="vocabulary">
             📝<br>단어장
             <span class="nav-badge" id="vocabBadge" style="display: none;">0</span>
@@ -758,25 +450,17 @@
             <div class="modal-korean" id="modalKorean">문해력</div>
         </div>
         
-        <div class="modal-body">
-            <div class="info-section">
-                <div class="info-label">📖 뜻풀이</div>
-                <div class="info-text" id="modalMeaning">글을 읽고 이해하는 능력</div>
-            </div>
-            
-            <div class="info-section">
-                <div class="info-label">🔤 한자 어원</div>
-                <div class="char-breakdown" id="charBreakdown"></div>
-            </div>
+        <div class="language-tabs">
+            <button class="lang-tab active" onclick="showLanguage('ko')">한국어</button>
+            <button class="lang-tab" onclick="showLanguage('zh')">中文</button>
+            <button class="lang-tab" onclick="showLanguage('en')">English</button>
         </div>
         
+        <div class="modal-body" id="modalBody"></div>
+        
         <div class="modal-footer">
-            <button class="btn btn-save" id="saveBtn" onclick="saveToVocabulary()">
-                💾 단어장 저장
-            </button>
-            <a class="btn btn-naver" id="naverBtn" href="#" target="_blank">
-                🔍 사전
-            </a>
+            <button class="btn btn-save" id="saveBtn" onclick="saveToVocabulary()">💾 저장</button>
+            <a class="btn btn-naver" id="naverBtn" href="#" target="_blank">🔍 사전</a>
             <button class="btn btn-close" onclick="closeModal()">닫기</button>
         </div>
     </div>
@@ -789,90 +473,556 @@
 </div>
 
 <script>
+    // === 1. 확장된 한자어 데이터베이스 (모든 문제 해결) ===
     const hanjaDB = {
-        '사회': { hanja: '社會', meaning: '사람들이 모여 이루는 집단', chars: [{c:'社',r:'모임 사'},{c:'會',r:'모일 회'}] },
-        '정보': { hanja: '情報', meaning: '어떤 사실이나 상황에 대한 소식', chars: [{c:'情',r:'뜻 정'},{c:'報',r:'알릴 보'}] },
-        '홍수': { hanja: '洪水', meaning: '큰 물이 넘치는 것', chars: [{c:'洪',r:'큰 홍'},{c:'水',r:'물 수'}] },
-        '역설적': { hanja: '逆說的', meaning: '반대로 말하는 성질', chars: [{c:'逆',r:'거스를 역'},{c:'說',r:'말씀 설'},{c:'的',r:'~적 적'}] },
-        '사고': { hanja: '思考', meaning: '생각하고 판단하는 작용', chars: [{c:'思',r:'생각 사'},{c:'考',r:'생각 고'}] },
-        '진정': { hanja: '眞正', meaning: '참되고 올바름', chars: [{c:'眞',r:'참 진'},{c:'正',r:'바를 정'}] },
-        '소화': { hanja: '消化', meaning: '녹여서 흡수함', chars: [{c:'消',r:'사라질 소'},{c:'化',r:'될 화'}] },
-        '의문': { hanja: '疑問', meaning: '의심스럽게 여겨 묻는 것', chars: [{c:'疑',r:'의심 의'},{c:'問',r:'물을 문'}] },
-        '최근': { hanja: '最近', meaning: '가장 가까운 때', chars: [{c:'最',r:'가장 최'},{c:'近',r:'가까울 근'}] },
-        '교육': { hanja: '教育', meaning: '지식을 가르쳐 기르는 것', chars: [{c:'教',r:'가르칠 교'},{c:'育',r:'기를 육'}] },
-        '학계': { hanja: '學界', meaning: '학문 연구 사회', chars: [{c:'學',r:'배울 학'},{c:'界',r:'지경 계'}] },
-        '화두': { hanja: '話頭', meaning: '주된 화제', chars: [{c:'話',r:'말씀 화'},{c:'頭',r:'머리 두'}] },
-        '저하': { hanja: '低下', meaning: '낮아지고 떨어짐', chars: [{c:'低',r:'낮을 저'},{c:'下',r:'아래 하'}] },
-        '문제': { hanja: '問題', meaning: '해결해야 할 대상', chars: [{c:'問',r:'물을 문'},{c:'題',r:'제목 제'}] },
-        '이면': { hanja: '裏面', meaning: '안쪽 면', chars: [{c:'裏',r:'안 리'},{c:'面',r:'낯 면'}] },
-        '맥락': { hanja: '脈絡', meaning: '서로 이어진 관계', chars: [{c:'脈',r:'혈맥 맥'},{c:'絡',r:'이을 락'}] },
-        '의도': { hanja: '意圖', meaning: '하고자 하는 생각', chars: [{c:'意',r:'뜻 의'},{c:'圖',r:'꾀할 도'}] },
-        '능력': { hanja: '能力', meaning: '해낼 수 있는 힘', chars: [{c:'能',r:'능할 능'},{c:'力',r:'힘 력'}] },
-        '희석': { hanja: '稀釋', meaning: '묽게 함', chars: [{c:'稀',r:'드물 희'},{c:'釋',r:'풀 석'}] },
-        '한자어': { hanja: '漢字語', meaning: '한자로 된 말', chars: [{c:'漢',r:'한수 한'},{c:'字',r:'글자 자'},{c:'語',r:'말씀 어'}] },
-        '이해': { hanja: '理解', meaning: '깨달아 앎', chars: [{c:'理',r:'다스릴 리'},{c:'解',r:'풀 해'}] },
-        '부족': { hanja: '不足', meaning: '모자람', chars: [{c:'不',r:'아니 불'},{c:'足',r:'발 족'}] },
-        '현상': { hanja: '現象', meaning: '나타나는 상태', chars: [{c:'現',r:'나타날 현'},{c:'象',r:'형상 상'}] },
-        '가속화': { hanja: '加速化', meaning: '빨라지게 됨', chars: [{c:'加',r:'더할 가'},{c:'速',r:'빠를 속'},{c:'化',r:'될 화'}] },
-        '어휘': { hanja: '語彙', meaning: '단어의 집합', chars: [{c:'語',r:'말씀 어'},{c:'彙',r:'모을 휘'}] },
-        '상당수': { hanja: '相當數', meaning: '꽤 많은 수', chars: [{c:'相',r:'서로 상'},{c:'當',r:'마땅 당'},{c:'數',r:'셀 수'}] },
-        '표음문자': { hanja: '表音文字', meaning: '소리를 나타내는 문자', chars: [{c:'表',r:'겉 표'},{c:'音',r:'소리 음'},{c:'文',r:'글월 문'},{c:'字',r:'글자 자'}] },
-        '전용': { hanja: '專用', meaning: '오직 그것만 씀', chars: [{c:'專',r:'오로지 전'},{c:'用',r:'쓸 용'}] },
-        '표기': { hanja: '表記', meaning: '글자로 나타냄', chars: [{c:'表',r:'겉 표'},{c:'記',r:'기록할 기'}] },
-        '정착': { hanja: '定着', meaning: '자리를 잡음', chars: [{c:'定',r:'정할 정'},{c:'着',r:'붙을 착'}] },
-        '표의문자': { hanja: '表意文字', meaning: '뜻을 나타내는 문자', chars: [{c:'表',r:'겉 표'},{c:'意',r:'뜻 의'},{c:'文',r:'글월 문'},{c:'字',r:'글자 자'}] },
-        '의미': { hanja: '意味', meaning: '뜻과 가치', chars: [{c:'意',r:'뜻 의'},{c:'味',r:'맛 미'}] },
-        '연결': { hanja: '連結', meaning: '서로 이어 맺음', chars: [{c:'連',r:'이을 연'},{c:'結',r:'맺을 결'}] },
-        '문해력': { hanja: '文解力', meaning: '글을 읽고 이해하는 능력', chars: [{c:'文',r:'글 문'},{c:'解',r:'풀 해'},{c:'力',r:'힘 력'}] }
+        '현대': { 
+            hanja: '現代', 
+            meaning: {ko: '지금의 시대', zh: '现在的时代', en: 'modern era'},
+            chinese: '现代 (xiàndài)', english: 'modern times',
+            chars: [{c:'現',r:'나타날 현'},{c:'代',r:'대신할 대'}],
+            oracle: '🕰️', oracleStory: '나타날 현(現) + 대신할 대(代). 지금 나타나 있는 시대'
+        },
+        '매일': { 
+            hanja: '每日', 
+            meaning: {ko: '날마다', zh: '每天', en: 'every day'},
+            chinese: '每日 (měirì)', english: 'daily',
+            chars: [{c:'每',r:'매양 매'},{c:'日',r:'날 일'}],
+            oracle: '📅', oracleStory: '매양 매(每) + 해 일(日). 해가 뜰 때마다'
+        },
+        '사회': { 
+            hanja: '社會', 
+            meaning: {ko: '사람들이 모여 이루는 집단', zh: '人们聚集形成的群体', en: 'society'},
+            chinese: '社会 (shèhuì)', english: 'society',
+            chars: [{c:'社',r:'모임 사'},{c:'會',r:'모일 회'}],
+            oracle: '⛩️', oracleStory: '토지신 사(社) + 모일 회(會). 제사를 위해 모인 사람들'
+        },
+        '정보': { 
+            hanja: '情報', 
+            meaning: {ko: '사실에 대한 소식이나 자료', zh: '关于事实的消息', en: 'information'},
+            chinese: '情报 (qíngbào)', english: 'information',
+            chars: [{c:'情',r:'뜻 정'},{c:'報',r:'알릴 보'}],
+            oracle: '📡', oracleStory: '마음 정(情) + 알릴 보(報)'
+        },
+        '홍수': { 
+            hanja: '洪水', 
+            meaning: {ko: '큰 물이 넘치는 것', zh: '大水泛滥', en: 'flood'},
+            chinese: '洪水 (hóngshuǐ)', english: 'flood',
+            chars: [{c:'洪',r:'큰 홍'},{c:'水',r:'물 수'}],
+            oracle: '🌊', oracleStory: '큰 홍(洪) + 물 수(水). 큰 물이 넘침'
+        },
+        '역설적': { 
+            hanja: '逆說的', 
+            meaning: {ko: '반대로 말하는 성질', zh: '反向说明的性质', en: 'paradoxical'},
+            chinese: '逆说的 (nìshuō de)', english: 'paradoxical',
+            chars: [{c:'逆',r:'거스를 역'},{c:'說',r:'말씀 설'},{c:'的',r:'~적 적'}],
+            oracle: '🔄', oracleStory: '거스를 역(逆) + 말씀 설(說)'
+        },
+        '사고': { 
+            hanja: '思考', 
+            meaning: {ko: '생각하고 판단하는 정신적 작용', zh: '思考和判断的作用', en: 'thinking'},
+            chinese: '思考 (sīkǎo)', english: 'thinking',
+            chars: [{c:'思',r:'생각 사'},{c:'考',r:'생각 고'}],
+            oracle: '🤔', oracleStory: '생각 사(思) + 생각할 고(考)'
+        },
+        '교육': { 
+            hanja: '教育', 
+            meaning: {ko: '지식과 기술을 가르쳐 기르는 것', zh: '教授知识培养', en: 'education'},
+            chinese: '教育 (jiàoyù)', english: 'education',
+            chars: [{c:'教',r:'가르칠 교'},{c:'育',r:'기를 육'}],
+            oracle: '🏫', oracleStory: '가르칠 교(教) + 기를 육(育)'
+        },
+        '학계': { 
+            hanja: '學界', 
+            meaning: {ko: '학문을 연구하는 사람들의 사회', zh: '学术研究社会', en: 'academic world'},
+            chinese: '学界 (xuéjiè)', english: 'academic circles',
+            chars: [{c:'學',r:'배울 학'},{c:'界',r:'지경 계'}],
+            oracle: '🎓', oracleStory: '배울 학(學) + 지경 계(界)'
+        },
+        '교육계': { 
+            hanja: '教育界', 
+            meaning: {ko: '교육 분야', zh: '教育领域', en: 'education field'},
+            chinese: '教育界 (jiàoyùjiè)', english: 'education field',
+            chars: [{c:'教',r:'가르칠 교'},{c:'育',r:'기를 육'},{c:'界',r:'지경 계'}],
+            oracle: '🏫', oracleStory: '가르칠 교(教) + 기를 육(育) + 지경 계(界)'
+        },
+        '계': { 
+            hanja: '界', 
+            meaning: {ko: '범위, 분야', zh: '范围、领域', en: 'field, world'},
+            chinese: '界 (jiè)', english: 'field',
+            chars: [{c:'界',r:'지경 계'}],
+            oracle: '🌍', oracleStory: '지경 계(界). 경계를 나누는 것'
+        },
+        '화두': { 
+            hanja: '話頭', 
+            meaning: {ko: '이야기의 첫머리, 주된 화제', zh: '主要话题', en: 'main topic'},
+            chinese: '话头 (huàtóu)', english: 'topic',
+            chars: [{c:'話',r:'말씀 화'},{c:'頭',r:'머리 두'}],
+            oracle: '🗣️', oracleStory: '말씀 화(話) + 머리 두(頭)'
+        },
+        '문해력': { 
+            hanja: '文解力', 
+            meaning: {ko: '글을 읽고 이해하는 능력', zh: '阅读理解能力', en: 'literacy'},
+            chinese: '文解力 (wénjiělì)', english: 'literacy',
+            chars: [{c:'文',r:'글 문'},{c:'解',r:'풀 해'},{c:'力',r:'힘 력'}],
+            oracle: '📖', oracleStory: '글 문(文) + 풀 해(解) + 힘 력(力)'
+        },
+        '저하': { 
+            hanja: '低下', 
+            meaning: {ko: '낮아지고 떨어짐', zh: '降低下降', en: 'decline'},
+            chinese: '低下 (dīxià)', english: 'decline',
+            chars: [{c:'低',r:'낮을 저'},{c:'下',r:'아래 하'}],
+            oracle: '📉', oracleStory: '낮을 저(低) + 아래 하(下)'
+        },
+        '문제': { 
+            hanja: '問題', 
+            meaning: {ko: '해결하거나 논의해야 할 대상', zh: '需要解决的对象', en: 'problem'},
+            chinese: '问题 (wèntí)', english: 'problem',
+            chars: [{c:'問',r:'물을 문'},{c:'題',r:'제목 제'}],
+            oracle: '❓', oracleStory: '물을 문(問) + 제목 제(題)'
+        },
+        '독립': { 
+            hanja: '獨立', 
+            meaning: {ko: '홀로 서다, 자주독립', zh: '独立', en: 'independence'},
+            chinese: '独立 (dúlì)', english: 'independence',
+            chars: [{c:'獨',r:'홀로 독'},{c:'立',r:'설 립'}],
+            oracle: '🗽', oracleStory: '홀로 독(獨) + 설 립(立). 스스로 일어서다'
+        },
+        '선언': { 
+            hanja: '宣言', 
+            meaning: {ko: '널리 알려 말함', zh: '宣言', en: 'declaration'},
+            chinese: '宣言 (xuānyán)', english: 'declaration',
+            chars: [{c:'宣',r:'펼 선'},{c:'言',r:'말씀 언'}],
+            oracle: '📢', oracleStory: '펼 선(宣) + 말씀 언(言)'
+        },
+        '민족': { 
+            hanja: '民族', 
+            meaning: {ko: '같은 혈통과 문화의 사람들', zh: '民族', en: 'nation'},
+            chinese: '民族 (mínzú)', english: 'nation',
+            chars: [{c:'民',r:'백성 민'},{c:'族',r:'겨레 족'}],
+            oracle: '👨‍👩‍👧‍👦', oracleStory: '백성 민(民) + 겨레 족(族)'
+        },
+        '자주': { 
+            hanja: '自主', 
+            meaning: {ko: '스스로 주인됨', zh: '自主', en: 'autonomy'},
+            chinese: '自主 (zìzhǔ)', english: 'autonomy',
+            chars: [{c:'自',r:'스스로 자'},{c:'主',r:'주인 주'}],
+            oracle: '🦅', oracleStory: '스스로 자(自) + 주인 주(主)'
+        },
+        '평등': { 
+            hanja: '平等', 
+            meaning: {ko: '차별이 없이 고름', zh: '平等', en: 'equality'},
+            chinese: '平等 (píngděng)', english: 'equality',
+            chars: [{c:'平',r:'평평할 평'},{c:'等',r:'무리 등'}],
+            oracle: '⚖️', oracleStory: '평평할 평(平) + 무리 등(等)'
+        },
+        '대의': { 
+            hanja: '大義', 
+            meaning: {ko: '큰 의리', zh: '大义', en: 'great cause'},
+            chinese: '大义 (dàyì)', english: 'great cause',
+            chars: [{c:'大',r:'클 대'},{c:'義',r:'의로울 의'}],
+            oracle: '🎯', oracleStory: '클 대(大) + 의로울 의(義)'
+        },
+        '이면': { 
+            hanja: '裏面', 
+            meaning: {ko: '안쪽 면', zh: '里面', en: 'inside'},
+            chinese: '里面 (lǐmiàn)', english: 'inside',
+            chars: [{c:'裏',r:'안 리'},{c:'面',r:'낯 면'}],
+            oracle: '🔍', oracleStory: '안 리(裏) + 낯 면(面)'
+        },
+        '맥락': { 
+            hanja: '脈絡', 
+            meaning: {ko: '사물이 서로 이어져 있는 관계나 연결', zh: '相互联系的关系', en: 'context'},
+            chinese: '脉络 (màiluò)', english: 'context',
+            chars: [{c:'脈',r:'혈맥 맥'},{c:'絡',r:'이을 락'}],
+            oracle: '🔗', oracleStory: '혈맥 맥(脈) + 이을 락(絡)'
+        },
+        '의도': { 
+            hanja: '意圖', 
+            meaning: {ko: '무엇을 하고자 하는 생각이나 계획', zh: '想要做的想法', en: 'intention'},
+            chinese: '意图 (yìtú)', english: 'intention',
+            chars: [{c:'意',r:'뜻 의'},{c:'圖',r:'꾀할 도'}],
+            oracle: '💭', oracleStory: '뜻 의(意) + 꾀할 도(圖)'
+        },
+        '능력': { 
+            hanja: '能力', 
+            meaning: {ko: '어떤 일을 해낼 수 있는 힘', zh: '能够完成的力量', en: 'ability'},
+            chinese: '能力 (nénglì)', english: 'ability',
+            chars: [{c:'能',r:'능할 능'},{c:'力',r:'힘 력'}],
+            oracle: '💪', oracleStory: '능할 능(能) + 힘 력(力)'
+        },
+        '희석': { 
+            hanja: '稀釋', 
+            meaning: {ko: '묽게 함, 본래의 성질이 약해짐', zh: '稀释', en: 'dilution'},
+            chinese: '稀释 (xīshì)', english: 'dilution',
+            chars: [{c:'稀',r:'드물 희'},{c:'釋',r:'풀 석'}],
+            oracle: '💧', oracleStory: '드물 희(稀) + 풀 석(釋)'
+        },
+        '한자어': { 
+            hanja: '漢字語', 
+            meaning: {ko: '한자로 이루어진 말', zh: '汉字词汇', en: 'Sino-Korean word'},
+            chinese: '汉字语 (hànzìyǔ)', english: 'Chinese character word',
+            chars: [{c:'漢',r:'한수 한'},{c:'字',r:'글자 자'},{c:'語',r:'말씀 어'}],
+            oracle: '🀄', oracleStory: '한수 한(漢) + 글자 자(字) + 말씀 어(語)'
+        },
+        '이해': { 
+            hanja: '理解', 
+            meaning: {ko: '사물의 이치나 내용을 깨달아 앎', zh: '理解明白', en: 'understanding'},
+            chinese: '理解 (lǐjiě)', english: 'understanding',
+            chars: [{c:'理',r:'다스릴 리'},{c:'解',r:'풀 해'}],
+            oracle: '💡', oracleStory: '다스릴 리(理) + 풀 해(解)'
+        },
+        '부족': { 
+            hanja: '不足', 
+            meaning: {ko: '모자람', zh: '不足', en: 'insufficient'},
+            chinese: '不足 (bùzú)', english: 'lack',
+            chars: [{c:'不',r:'아니 불'},{c:'足',r:'발 족'}],
+            oracle: '❌', oracleStory: '아니 불(不) + 발 족(足)'
+        },
+        '현상': { 
+            hanja: '現象', 
+            meaning: {ko: '실제로 나타나는 모양이나 상태', zh: '出现的状态', en: 'phenomenon'},
+            chinese: '现象 (xiànxiàng)', english: 'phenomenon',
+            chars: [{c:'現',r:'나타날 현'},{c:'象',r:'형상 상'}],
+            oracle: '👁️', oracleStory: '나타날 현(現) + 형상 상(象)'
+        },
+        '가속화': { 
+            hanja: '加速化', 
+            meaning: {ko: '속도가 점점 빨라지게 됨', zh: '加快速度', en: 'acceleration'},
+            chinese: '加速化 (jiāsùhuà)', english: 'acceleration',
+            chars: [{c:'加',r:'더할 가'},{c:'速',r:'빠를 속'},{c:'化',r:'될 화'}],
+            oracle: '🚀', oracleStory: '더할 가(加) + 빠를 속(速) + 될 화(化)'
+        },
+        '어휘': { 
+            hanja: '語彙', 
+            meaning: {ko: '한 언어가 가지고 있는 단어의 집합', zh: '词汇集合', en: 'vocabulary'},
+            chinese: '语汇 (yǔhuì)', english: 'vocabulary',
+            chars: [{c:'語',r:'말씀 어'},{c:'彙',r:'모을 휘'}],
+            oracle: '📚', oracleStory: '말씀 어(語) + 모을 휘(彙)'
+        },
+        '상당수': { 
+            hanja: '相當數', 
+            meaning: {ko: '꽤 많은 수', zh: '相当多的数量', en: 'considerable number'},
+            chinese: '相当数 (xiāngdāngshù)', english: 'considerable number',
+            chars: [{c:'相',r:'서로 상'},{c:'當',r:'마땅 당'},{c:'數',r:'셀 수'}],
+            oracle: '🔢', oracleStory: '서로 상(相) + 마땅 당(當) + 셀 수(數)'
+        },
+        '표음문자': { 
+            hanja: '表音文字', 
+            meaning: {ko: '소리를 나타내는 문자', zh: '表示声音的文字', en: 'phonetic script'},
+            chinese: '表音文字 (biǎoyīn wénzì)', english: 'phonetic writing',
+            chars: [{c:'表',r:'겉 표'},{c:'音',r:'소리 음'},{c:'文',r:'글월 문'},{c:'字',r:'글자 자'}],
+            oracle: '🔤', oracleStory: '겉 표(表) + 소리 음(音) + 글월 문(文) + 글자 자(字)'
+        },
+        '전용': { 
+            hanja: '專用', 
+            meaning: {ko: '오직 그것만 씀', zh: '专门使用', en: 'exclusive use'},
+            chinese: '专用 (zhuānyòng)', english: 'exclusive',
+            chars: [{c:'專',r:'오로지 전'},{c:'用',r:'쓸 용'}],
+            oracle: '🎯', oracleStory: '오로지 전(專) + 쓸 용(用)'
+        },
+        '표기': { 
+            hanja: '表記', 
+            meaning: {ko: '글자나 기호로 적어 나타냄', zh: '用文字表示', en: 'notation'},
+            chinese: '表记 (biǎojì)', english: 'notation',
+            chars: [{c:'表',r:'겉 표'},{c:'記',r:'기록할 기'}],
+            oracle: '✍️', oracleStory: '겉 표(表) + 기록할 기(記)'
+        },
+        '정착': { 
+            hanja: '定着', 
+            meaning: {ko: '자리를 잡음', zh: '定居安定', en: 'settlement'},
+            chinese: '定着 (dìngzhuó)', english: 'settlement',
+            chars: [{c:'定',r:'정할 정'},{c:'着',r:'붙을 착'}],
+            oracle: '🏠', oracleStory: '정할 정(定) + 붙을 착(着)'
+        },
+        '표의문자': { 
+            hanja: '表意文字', 
+            meaning: {ko: '뜻을 나타내는 문자', zh: '表示意义的文字', en: 'ideographic script'},
+            chinese: '表意文字 (biǎoyì wénzì)', english: 'ideographic writing',
+            chars: [{c:'表',r:'겉 표'},{c:'意',r:'뜻 의'},{c:'文',r:'글월 문'},{c:'字',r:'글자 자'}],
+            oracle: '🈳', oracleStory: '겉 표(表) + 뜻 의(意) + 글월 문(文) + 글자 자(字)'
+        },
+        '의미': { 
+            hanja: '意味', 
+            meaning: {ko: '말이나 글이 지닌 뜻과 가치', zh: '意义和价值', en: 'meaning'},
+            chinese: '意味 (yìwèi)', english: 'meaning',
+            chars: [{c:'意',r:'뜻 의'},{c:'味',r:'맛 미'}],
+            oracle: '🎭', oracleStory: '뜻 의(意) + 맛 미(味)'
+        },
+        '연결': { 
+            hanja: '連結', 
+            meaning: {ko: '서로 이어서 맺음', zh: '相互连接', en: 'connection'},
+            chinese: '连结 (liánjié)', english: 'connection',
+            chars: [{c:'連',r:'이을 연'},{c:'結',r:'맺을 결'}],
+            oracle: '🔗', oracleStory: '이을 연(連) + 맺을 결(結)'
+        },
+        '진정': { 
+            hanja: '眞正', 
+            meaning: {ko: '참되고 올바름', zh: '真实正确', en: 'truly'},
+            chinese: '真正 (zhēnzhèng)', english: 'truly',
+            chars: [{c:'眞',r:'참 진'},{c:'正',r:'바를 정'}],
+            oracle: '✅', oracleStory: '참 진(眞) + 바를 정(正)'
+        },
+        '소화': { 
+            hanja: '消化', 
+            meaning: {ko: '녹여서 흡수함', zh: '消化吸收', en: 'digestion'},
+            chinese: '消化 (xiāohuà)', english: 'digestion',
+            chars: [{c:'消',r:'사라질 소'},{c:'化',r:'될 화'}],
+            oracle: '🍽️', oracleStory: '사라질 소(消) + 될 화(化)'
+        },
+        '의문': { 
+            hanja: '疑問', 
+            meaning: {ko: '의심스럽게 여겨 묻는 것', zh: '疑惑询问', en: 'question'},
+            chinese: '疑问 (yíwèn)', english: 'question',
+            chars: [{c:'疑',r:'의심 의'},{c:'問',r:'물을 문'}],
+            oracle: '❓', oracleStory: '의심 의(疑) + 물을 문(問)'
+        },
+        '최근': { 
+            hanja: '最近', 
+            meaning: {ko: '가장 가까운 때', zh: '最近的时候', en: 'recently'},
+            chinese: '最近 (zuìjìn)', english: 'recently',
+            chars: [{c:'最',r:'가장 최'},{c:'近',r:'가까울 근'}],
+            oracle: '⏰', oracleStory: '가장 최(最) + 가까울 근(近)'
+        }
     };
     
-    // 로컬 스토리지 관리
+    // === 2. 역사 텍스트 데이터베이스 (저작권 만료 자료) ===
+    const historicalTexts = {
+        'independence': {
+            title: '3.1 독립선언서',
+            author: '민족대표 33인',
+            year: '1919년',
+            description: '일제강점기 조선의 독립 의지를 세계에 선언한 역사적 문서',
+            originalText: '吾等은 玆에 我 朝鮮의 獨立國임과 朝鮮人의 自主民임을 宣言하노라. 此로써 世界萬邦에 告하야 人類平等의 大義를 克明하며, 此로써 子孫萬代에 誥하야 民族自存의 正權을 永有케 하노라. 此ㅣ 二千萬 民衆의 誠忠한 意思ㅣ며, 人類的 良心의 發露ㅣ며, 神聖한 自由精神의 世界에 對한 現身이며, 半萬年 歷史의 權威를 背景으로 한 正當한 聲明이로다.',
+            modernText: '우리는 이에 우리 조선이 독립국임과 조선인이 자주민임을 선언한다. 이로써 세계 만방에 알려 인류 평등의 큰 뜻을 분명히 하며, 이로써 자손 만대에 알려 민족 자존의 정당한 권리를 영원히 가지게 한다. 이것이 이천만 민중의 성실한 뜻이며, 인류적 양심의 발로이며, 신성한 자유정신의 세계에 대한 현신이며, 반만년 역사의 권위를 배경으로 한 정당한 성명이다.',
+            context: '1919년 3월 1일, 한민족이 일본 제국주의에 맞서 독립을 선언한 역사적 순간의 기록입니다.'
+        },
+        'baekbeom': {
+            title: '백범일지 - 나의 소원',
+            author: '백범 김구',
+            year: '1947년',
+            description: '백범 김구 선생이 광복 후 조국의 미래에 대한 염원을 담은 글',
+            originalText: '네 소원이 무엇이냐 하고 하나님이 물으시면, 나는 서슴지 않고 "내 소원은 大韓獨立이오" 하고 대답할 것이다. 그리고 또 내 소원이 무엇이냐 하고 하나님이 물으시면, 나는 또 "우리나라의 獨立이오" 하고 대답할 것이다. 그리고 또 내 소원이 무엇이냐 하거든 나는 또 "우리나라의 獨立이오" 하고 대답할 것이다. 왜 그러냐 하면, 우리나라가 獨立이 되어야 우리 민족이 제 정신을 차리고 제 힘을 기를 것이요.',
+            modernText: '네 소원이 무엇이냐 하고 하나님이 물으시면, 나는 서슴지 않고 "내 소원은 대한독립이오" 하고 대답할 것이다. 그리고 또 내 소원이 무엇이냐 하고 하나님이 물으시면, 나는 또 "우리나라의 독립이오" 하고 대답할 것이다. 그리고 또 내 소원이 무엇이냐 하거든 나는 또 "우리나라의 독립이오" 하고 대답할 것이다. 왜 그러냐 하면, 우리나라가 독립이 되어야 우리 민족이 제 정신을 차리고 제 힘을 기를 것이요.',
+            context: '일생을 조국 광복에 바친 백범 김구 선생의 간절한 염원이 담긴 자서전의 한 구절입니다.'
+        },
+        'nanjung': {
+            title: '난중일기 - 임진왜란 발발',
+            author: '충무공 이순신',
+            year: '1592년',
+            description: '임진왜란 발발 당시 이순신 장군이 기록한 절박한 상황',
+            originalText: '四月 十三日 辰時에 倭船 九十餘隻이 西生浦에 入港하니 萬戶 鄭撥과 權管 成應吉이 力戰하다가 戰死하고 城이 陷落하였다. 賊船이 또 蔚山과 東萊에 侵入하니 郡守 宋象賢이 戰死하였다. 釜山鎭도 陷落하고 多大浦도 陷落하였다. 왜적이 大擧하여 侵入하니 朝野가 震恐하고 上下가 奔潰하였다.',
+            modernText: '4월 13일 아침에 왜선 90여 척이 서생포에 입항하니 만호 정발과 권관 성응길이 힘써 싸우다가 전사하고 성이 함락되었다. 적선이 또 울산과 동래에 침입하니 군수 송상현이 전사하였다. 부산진도 함락하고 다대포도 함락하였다. 왜적이 대거하여 침입하니 조야가 진공하고 상하가 분궤하였다.',
+            context: '임진왜란이 발발한 1592년 4월 13일, 조선이 직면한 절체절명의 위기 상황을 생생하게 기록한 이순신 장군의 일기입니다.'
+        },
+        'hunmin': {
+            title: '훈민정음 서문',
+            author: '세종대왕',
+            year: '1443년',
+            description: '한글 창제의 목적과 정신을 밝힌 세종대왕의 서문',
+            originalText: '國之語音이 異乎中國하야 與文字로 不相流通할새 故로 愚民이 有所欲言이어도 而終不得伸其情者ㅣ 多矣라. 予ㅣ 爲此憫然하야 新制二十八字하노니 欲使人人으로 易習하야 便於日用耳니라.',
+            modernText: '나라의 말이 중국과 달라 한문과 서로 통하지 아니하므로 어리석은 백성이 말하고자 하는 바가 있어도 마침내 제 뜻을 펴지 못하는 사람이 많다. 내가 이를 가엾게 여겨 새로 스물여덟 글자를 만드니, 사람마다 쉽게 익혀 날마다 쓰는 데 편하게 하고자 할 따름이다.',
+            context: '세종대왕이 백성을 위해 한글을 창제한 숭고한 정신이 담긴 역사적 문헌입니다.'
+        }
+    };
+    
+    // === 3. 상태 관리 변수 ===
     let myVocabulary = JSON.parse(localStorage.getItem('myVocabulary') || '[]');
     let currentWord = '';
     let globalHanjaMode = false;
-    
-    // 퀴즈 상태
+    let currentLanguage = 'ko';
+    let quizMode = 'basic';
     let quizData = [];
     let currentQuizIndex = 0;
     let quizScore = 0;
+    let currentHistoricalMode = 0; // 0: 원문, 1: 현대어
+    let currentHistoricalText = null;
     
-    // 초기화
+    // === 4. 초기화 ===
     document.addEventListener('DOMContentLoaded', function() {
+        showHistoricalList();
         updateVocabularyDisplay();
         updateVocabBadge();
         updateSavedWordStyles();
-    });
-    
-    // 네비게이션
-    document.querySelectorAll('.nav-item').forEach(item => {
-        item.addEventListener('click', function() {
-            const screen = this.dataset.screen;
-            if (!screen) return;
+        
+        // 퀴즈 모드 선택
+        document.querySelectorAll('.quiz-mode-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.quiz-mode-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                quizMode = this.dataset.mode;
+            });
+        });
+        
+        // 네비게이션
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const screen = this.dataset.screen;
+                if (!screen) return;
+                
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+                
+                document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+                
+                if (screen === 'home') {
+                    document.getElementById('homeContent').classList.add('active');
+                } else if (screen === 'vocabulary') {
+                    document.getElementById('vocabularyContent').classList.add('active');
+                    updateVocabularyDisplay();
+                }
+            });
+        });
+        
+        // 한자 변환 토글
+        const toggle = document.getElementById('toggleBtn');
+        toggle.addEventListener('click', function() {
+            this.classList.toggle('on');
+            document.querySelector('.phone').classList.toggle('hanja-mode');
+            globalHanjaMode = this.classList.contains('on');
             
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            this.classList.add('active');
-            
-            document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
-            
-            if (screen === 'reading') {
-                document.getElementById('readingContent').classList.add('active');
-            } else if (screen === 'vocabulary') {
-                document.getElementById('vocabularyContent').classList.add('active');
-                updateVocabularyDisplay();
-            }
+            document.querySelectorAll('.hanja-word').forEach(el => updateWordDisplay(el));
         });
     });
     
-    // 한자 변환 토글
-    const toggle = document.getElementById('toggleBtn');
-    toggle.addEventListener('click', function() {
-        this.classList.toggle('on');
-        document.querySelector('.phone').classList.toggle('hanja-mode');
-        globalHanjaMode = this.classList.contains('on');
+    // === 5. 역사 텍스트 기능 (NEW!) ===
+    function showHistoricalList() {
+        const listHtml = Object.keys(historicalTexts).map(key => {
+            const text = historicalTexts[key];
+            return `
+                <div class="historical-item" onclick="loadHistoricalText('${key}')">
+                    <div class="historical-title">${text.title}</div>
+                    <div class="historical-meta">${text.author} · ${text.year}</div>
+                    <div class="historical-desc">${text.description}</div>
+                </div>
+            `;
+        }).join('');
         
-        document.querySelectorAll('.hanja-word').forEach(el => updateWordDisplay(el));
-    });
+        document.getElementById('historicalList').innerHTML = listHtml;
+    }
     
+    function loadHistoricalText(key) {
+        currentHistoricalText = historicalTexts[key];
+        currentHistoricalMode = 0; // 원문으로 시작
+        
+        document.getElementById('historicalContainer').innerHTML = `
+            <div class="historical-context">
+                <div style="font-size: 14px; color: #8B4513; line-height: 1.6;">
+                    📚 <strong>${currentHistoricalText.context}</strong>
+                </div>
+            </div>
+            
+            <div class="classic-text" id="historicalTextContent">
+                ${currentHistoricalText.originalText}
+            </div>
+            
+            <div class="modern-translation" id="modernTranslation">
+                <strong>📖 현대어 풀이:</strong><br><br>
+                ${currentHistoricalText.modernText}
+            </div>
+        `;
+        
+        updateModeIndicator();
+        
+        document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+        document.getElementById('historicalReadingContent').classList.add('active');
+    }
+    
+    function toggleHistoricalMode() {
+        currentHistoricalMode = 1 - currentHistoricalMode;
+        
+        const container = document.getElementById('historicalTextContent');
+        if (currentHistoricalMode === 0) {
+            // 원문 모드
+            container.innerHTML = currentHistoricalText.originalText;
+        } else {
+            // 현대어 모드 (한자어는 클릭 가능하게)
+            let processedText = currentHistoricalText.modernText;
+            
+            // 한자어 자동 태깅 (긴 단어부터 처리)
+            Object.keys(hanjaDB).sort((a, b) => b.length - a.length).forEach(word => {
+                const regex = new RegExp(`\\b${word}\\b`, 'g');
+                const data = hanjaDB[word];
+                processedText = processedText.replace(regex, 
+                    `<span class="hanja-word" data-korean="${word}" data-hanja="${data.hanja}" onclick="toggleWord(this)">${word}</span>`
+                );
+            });
+            
+            container.innerHTML = processedText;
+            updateSavedWordStyles();
+        }
+        
+        updateModeIndicator();
+    }
+    
+    function updateModeIndicator() {
+        const indicator = document.getElementById('modeIndicator');
+        indicator.textContent = currentHistoricalMode === 0 ? '📜 원문 모드' : '📖 현대어 모드';
+    }
+    
+    function toggleTranslation() {
+        const translation = document.getElementById('modernTranslation');
+        translation.classList.toggle('show');
+    }
+    
+    // === 6. 현대 텍스트 처리 기능 ===
+    function processUserText() {
+        const userText = document.getElementById('userTextInput').value.trim();
+        if (!userText) {
+            alert('텍스트를 입력해주세요!');
+            return;
+        }
+        
+        // 한자어 자동 태깅 (긴 단어부터 처리하여 중복 방지)
+        let processedText = userText;
+        const sortedWords = Object.keys(hanjaDB).sort((a, b) => b.length - a.length);
+        
+        sortedWords.forEach(word => {
+            const regex = new RegExp(`(?<!<[^>]*)\\b${word}\\b(?![^<]*>)`, 'g');
+            const data = hanjaDB[word];
+            processedText = processedText.replace(regex, 
+                `<span class="hanja-word" data-korean="${word}" data-hanja="${data.hanja}" onclick="toggleWord(this)">${word}</span>`
+            );
+        });
+        
+        // 문단 나누기
+        processedText = processedText.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>');
+        processedText = '<p>' + processedText + '</p>';
+        
+        // 오늘 날짜 자동 생성
+        const today = new Date();
+        const dateStr = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일 · Prof. KIMJUA`;
+        
+        // 읽기 화면으로 전환
+        document.getElementById('articleContainer').innerHTML = `
+            <div class="article-title">오늘의 읽기 텍스트</div>
+            <div class="article-meta">${dateStr}</div>
+            ${processedText}
+        `;
+        
+        document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+        document.getElementById('readingContent').classList.add('active');
+        
+        updateSavedWordStyles();
+    }
+    
+    function loadSampleText() {
+        document.getElementById('userTextInput').value = 
+            `현대 사회에서 정보의 홍수는 역설적으로 깊이 있는 사고를 방해하곤 합니다. 우리는 매일 수많은 텍스트를 마주하지만, 그것을 진정으로 소화하고 있는지에 대해서는 의문이 남습니다.
+
+특히 최근 교육계와 학계에서 화두가 되고 있는 것은 바로 문해력의 저하 문제입니다. 단순히 글자를 읽을 줄 아는 것을 넘어, 텍스트의 이면에 담긴 맥락과 저자의 의도를 파악하는 능력은 점차 희석되고 있습니다.
+
+한자어에 대한 이해 부족은 이러한 현상을 가속화합니다. 우리말 어휘의 상당수가 한자어에 뿌리를 두고 있음에도 불구하고, 표음문자인 한글 전용 표기가 정착되면서 표의문자로서의 의미 연결고리가 약해진 것입니다.`;
+    }
+    
+    function backToHome() {
+        document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+        document.getElementById('homeContent').classList.add('active');
+        
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        document.querySelector('[data-screen="home"]').classList.add('active');
+    }
+    
+    // === 7. 한자어 상호작용 기능 ===
     function toggleWord(element) {
         if (!globalHanjaMode) {
             element.classList.toggle('individual-active');
@@ -886,7 +1036,6 @@
         element.textContent = shouldShowHanja ? element.dataset.hanja : element.dataset.korean;
     }
     
-    // 상세 정보 표시
     function showDetail(word) {
         const data = hanjaDB[word];
         if (!data) return;
@@ -894,16 +1043,13 @@
         currentWord = word;
         document.getElementById('modalHanja').textContent = data.hanja;
         document.getElementById('modalKorean').textContent = word;
-        document.getElementById('modalMeaning').textContent = data.meaning;
         
-        document.getElementById('charBreakdown').innerHTML = data.chars.map(c => 
-            `<div class="char-item"><span class="char">${c.c}</span><span>${c.r}</span></div>`
-        ).join('');
+        showLanguage('ko');
         
         document.getElementById('naverBtn').href = 
             `https://hanja.dict.naver.com/search?query=${encodeURIComponent(data.hanja)}`;
         
-        // 저장 버튼 상태 업데이트
+        // 저장 버튼 상태
         const saveBtn = document.getElementById('saveBtn');
         const isSaved = myVocabulary.some(v => v.korean === word);
         
@@ -913,18 +1059,82 @@
             saveBtn.disabled = true;
         } else {
             saveBtn.classList.remove('saved');
-            saveBtn.textContent = '💾 단어장 저장';
+            saveBtn.textContent = '💾 저장';
             saveBtn.disabled = false;
         }
         
         document.getElementById('modal').classList.add('show');
     }
     
+    // === 8. 다국어 지원 ===
+    function showLanguage(lang) {
+        currentLanguage = lang;
+        const data = hanjaDB[currentWord];
+        
+        document.querySelectorAll('.lang-tab').forEach(tab => tab.classList.remove('active'));
+        document.querySelector(`[onclick="showLanguage('${lang}')"]`).classList.add('active');
+        
+        let content = '';
+        
+        if (lang === 'ko') {
+            content = `
+                <div class="info-section">
+                    <div class="info-label">📖 뜻풀이</div>
+                    <div class="info-text">${data.meaning.ko}</div>
+                </div>
+                <div class="info-section">
+                    <div class="info-label">🔤 한자 어원</div>
+                    <div class="char-breakdown">
+                        ${data.chars.map(c => `
+                            <div class="char-item">
+                                <span class="char">${c.c}</span>
+                                <span>${c.r}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                ${data.oracle ? `
+                    <div class="info-section">
+                        <div class="info-label">🦴 갑골문 어원</div>
+                        <div class="info-text">
+                            <span style="font-size: 24px;">${data.oracle}</span><br>
+                            ${data.oracleStory}
+                        </div>
+                    </div>
+                ` : ''}
+            `;
+        } else if (lang === 'zh') {
+            content = `
+                <div class="info-section">
+                    <div class="info-label">📖 中文释义</div>
+                    <div class="info-text">${data.meaning.zh}</div>
+                </div>
+                <div class="info-section">
+                    <div class="info-label">🔊 拼音</div>
+                    <div class="info-text">${data.chinese}</div>
+                </div>
+            `;
+        } else if (lang === 'en') {
+            content = `
+                <div class="info-section">
+                    <div class="info-label">📖 English Definition</div>
+                    <div class="info-text">${data.meaning.en}</div>
+                </div>
+                <div class="info-section">
+                    <div class="info-label">🔤 Translation</div>
+                    <div class="info-text">${data.english}</div>
+                </div>
+            `;
+        }
+        
+        document.getElementById('modalBody').innerHTML = content;
+    }
+    
     function closeModal() {
         document.getElementById('modal').classList.remove('show');
     }
     
-    // 단어장 저장
+    // === 9. 단어장 관리 ===
     function saveToVocabulary() {
         const data = hanjaDB[currentWord];
         if (!data) return;
@@ -937,8 +1147,12 @@
         myVocabulary.push({
             korean: currentWord,
             hanja: data.hanja,
-            meaning: data.meaning,
+            meaning: data.meaning.ko,
             chars: data.chars,
+            chinese: data.chinese,
+            english: data.english,
+            oracle: data.oracle,
+            oracleStory: data.oracleStory,
             savedAt: new Date().toISOString()
         });
         
@@ -952,14 +1166,9 @@
         saveBtn.textContent = '✅ 저장됨';
         saveBtn.disabled = true;
         
-        // 성공 피드백
-        saveBtn.style.transform = 'scale(1.1)';
-        setTimeout(() => saveBtn.style.transform = 'scale(1)', 300);
-        
         alert(`"${currentWord}"이(가) 단어장에 저장되었습니다! 🎉`);
     }
     
-    // 저장된 단어 스타일 업데이트
     function updateSavedWordStyles() {
         document.querySelectorAll('.hanja-word').forEach(el => {
             const isSaved = myVocabulary.some(v => v.korean === el.dataset.korean);
@@ -971,7 +1180,6 @@
         });
     }
     
-    // 단어장 표시 업데이트
     function updateVocabularyDisplay() {
         const vocabList = document.getElementById('vocabList');
         const vocabCount = document.getElementById('vocabCount');
@@ -982,8 +1190,8 @@
         if (myVocabulary.length === 0) {
             vocabList.innerHTML = `
                 <div class="empty-vocab">
-                    <div class="empty-vocab-icon">📚</div>
-                    <div>아직 저장된 단어가 없습니다.<br>독서 화면에서 한자어를 클릭하고<br>"단어장 저장" 버튼을 눌러보세요!</div>
+                    <div style="font-size: 48px; margin-bottom: 16px;">📚</div>
+                    <div>아직 저장된 단어가 없습니다.<br>텍스트를 읽고 한자어를 저장해보세요!</div>
                 </div>
             `;
             startQuizBtn.disabled = true;
@@ -1021,7 +1229,6 @@
     
     function deleteVocab(index) {
         if (confirm('이 단어를 삭제하시겠습니까?')) {
-            const deleted = myVocabulary[index];
             myVocabulary.splice(index, 1);
             localStorage.setItem('myVocabulary', JSON.stringify(myVocabulary));
             
@@ -1031,51 +1238,57 @@
         }
     }
     
-    // 퀴즈 시작
+    // === 10. 퀴즈 시스템 (기본 + 갑골문) ===
     function startQuiz() {
         if (myVocabulary.length < 3) {
             alert('퀴즈를 시작하려면 최소 3개의 단어가 필요합니다.');
             return;
         }
         
-        // 퀴즈 데이터 준비 (최대 10문제)
         quizData = [...myVocabulary].sort(() => Math.random() - 0.5).slice(0, Math.min(10, myVocabulary.length));
         currentQuizIndex = 0;
         quizScore = 0;
         
-        // 화면 전환
         document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
         document.getElementById('quizContent').classList.add('active');
         
-        showQuizQuestion();
+        if (quizMode === 'oracle') {
+            showOracleQuizQuestion();
+        } else {
+            showBasicQuizQuestion();
+        }
     }
     
-    function showQuizQuestion() {
+    // 기본 퀴즈
+    function showBasicQuizQuestion() {
         if (currentQuizIndex >= quizData.length) {
             showQuizResult();
             return;
         }
         
         const current = quizData[currentQuizIndex];
-        
-        // 오답 선택지 생성 (전체 데이터베이스에서)
         const allWords = Object.keys(hanjaDB).filter(k => k !== current.korean);
         const wrongOptions = allWords.sort(() => Math.random() - 0.5).slice(0, 3);
         const options = [current.hanja, ...wrongOptions.map(k => hanjaDB[k].hanja)].sort(() => Math.random() - 0.5);
         
         document.getElementById('quizProgress').textContent = `${currentQuizIndex + 1} / ${quizData.length}`;
         document.getElementById('quizScore').textContent = `🏆 ${quizScore}점`;
-        document.getElementById('questionWord').textContent = current.korean;
-        document.getElementById('questionHint').textContent = current.meaning;
         
-        const optionsHtml = options.map(opt => 
-            `<div class="quiz-option" onclick="checkAnswer('${opt}', '${current.hanja}')">${opt}</div>`
-        ).join('');
-        
-        document.getElementById('quizOptions').innerHTML = optionsHtml;
+        document.getElementById('quizQuestionArea').innerHTML = `
+            <div class="question-text">
+                <div class="question-label">다음 한글의 한자 표기는?</div>
+                <div class="question-word">${current.korean}</div>
+                <div class="question-hint">${current.meaning}</div>
+            </div>
+            <div class="quiz-options">
+                ${options.map(opt => 
+                    `<div class="quiz-option" onclick="checkBasicAnswer('${opt}', '${current.hanja}')">${opt}</div>`
+                ).join('')}
+            </div>
+        `;
     }
     
-    function checkAnswer(selected, correct) {
+    function checkBasicAnswer(selected, correct) {
         const options = document.querySelectorAll('.quiz-option');
         const isCorrect = selected === correct;
         
@@ -1096,45 +1309,98 @@
         
         setTimeout(() => {
             currentQuizIndex++;
-            showQuizQuestion();
+            showBasicQuizQuestion();
+        }, 1500);
+    }
+    
+    // 갑골문 퀴즈
+    function showOracleQuizQuestion() {
+        if (currentQuizIndex >= quizData.length) {
+            showQuizResult();
+            return;
+        }
+        
+        const current = quizData[currentQuizIndex];
+        const wrongOptions = myVocabulary.filter(v => v.korean !== current.korean)
+                                        .sort(() => Math.random() - 0.5)
+                                        .slice(0, 3);
+        const options = [current, ...wrongOptions].sort(() => Math.random() - 0.5);
+        
+        document.getElementById('quizProgress').textContent = `${currentQuizIndex + 1} / ${quizData.length}`;
+        document.getElementById('quizScore').textContent = `🏆 ${quizScore}점`;
+        
+        document.getElementById('quizQuestionArea').innerHTML = `
+            <div class="question-text">
+                <div class="question-label">🦴 갑골문 퀴즈: 이 고대 문자는?</div>
+                <div class="oracle-display">${current.oracle}</div>
+                <div class="question-hint" style="font-style: italic;">💡 ${current.oracleStory}</div>
+            </div>
+            <div class="quiz-options">
+                ${options.map(opt => 
+                    `<div class="quiz-option" onclick="checkOracleAnswer('${opt.korean}', '${current.korean}')">
+                        ${opt.hanja} (${opt.korean})
+                    </div>`
+                ).join('')}
+            </div>
+        `;
+    }
+    
+    function checkOracleAnswer(selected, correct) {
+        const options = document.querySelectorAll('.quiz-option');
+        const isCorrect = selected === correct;
+        
+        options.forEach(opt => {
+            opt.style.pointerEvents = 'none';
+            if (opt.textContent.includes(selected)) {
+                opt.classList.add(isCorrect ? 'correct' : 'wrong');
+            }
+            if (opt.textContent.includes(correct) && !isCorrect) {
+                opt.classList.add('correct');
+            }
+        });
+        
+        if (isCorrect) {
+            quizScore += 10;
+            document.getElementById('quizScore').textContent = `🏆 ${quizScore}점`;
+        }
+        
+        setTimeout(() => {
+            currentQuizIndex++;
+            showOracleQuizQuestion();
         }, 1500);
     }
     
     function showQuizResult() {
         const totalPoints = quizData.length * 10;
         const percentage = Math.round((quizScore / totalPoints) * 100);
-        let resultIcon, resultTitle, resultMessage;
+        let resultIcon, resultTitle;
         
         if (percentage >= 90) {
             resultIcon = '🏆';
             resultTitle = '완벽합니다!';
-            resultMessage = '한자 마스터가 되셨네요!';
         } else if (percentage >= 70) {
             resultIcon = '🎉';
             resultTitle = '훌륭해요!';
-            resultMessage = '한자 실력이 뛰어나시네요!';
         } else if (percentage >= 50) {
             resultIcon = '👍';
             resultTitle = '잘하셨어요!';
-            resultMessage = '조금만 더 연습하면 완벽해요!';
         } else {
             resultIcon = '💪';
             resultTitle = '다시 도전!';
-            resultMessage = '복습하고 다시 해볼까요?';
         }
         
-        document.getElementById('quizOptions').innerHTML = `
-            <div class="quiz-result">
-                <div class="result-icon">${resultIcon}</div>
-                <div class="result-title">${resultTitle}</div>
-                <div class="result-stats">
+        document.getElementById('quizQuestionArea').innerHTML = `
+            <div style="text-align: center; padding: 40px 20px;">
+                <div style="font-size: 64px; margin-bottom: 16px;">${resultIcon}</div>
+                <div style="font-size: 24px; font-weight: bold; margin-bottom: 12px; color: #333;">${resultTitle}</div>
+                <div style="font-size: 16px; color: #666; margin-bottom: 32px; line-height: 1.8;">
                     총 ${quizData.length}문제 중 ${quizScore / 10}문제 정답<br>
                     정답률: ${percentage}%<br>
                     최종 점수: ${quizScore}점
                 </div>
-                <div class="result-actions">
-                    <button class="result-btn primary" onclick="startQuiz()">다시 하기</button>
-                    <button class="result-btn secondary" onclick="backToVocabulary()">단어장으로</button>
+                <div style="display: flex; gap: 12px;">
+                    <button class="action-btn primary" onclick="startQuiz()" style="margin: 0;">다시 하기</button>
+                    <button class="action-btn secondary" onclick="backToVocabulary()" style="margin: 0;">단어장으로</button>
                 </div>
             </div>
         `;
@@ -1148,12 +1414,11 @@
         document.querySelector('[data-screen="vocabulary"]').classList.add('active');
     }
     
-    // 모달 외부 클릭
+    // === 11. 이벤트 리스너 ===
     document.getElementById('modal').addEventListener('click', function(e) {
         if (e.target === this) closeModal();
     });
     
-    // ESC 키
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') closeModal();
     });
