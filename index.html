@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Text & Hanja">
+<title>Text & Hanja - Prof. KIMJUA의 한자 학습 도구</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+        padding: 20px;
+    }
+    
+    .phone {
+        width: 375px;
+        height: 812px;
+        background: #FDFBF7;
+        border-radius: 30px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .header {
+        height: 64px;
+        background: #F7F2EB;
+        border-bottom: 1px solid #e0e0e0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+        flex-shrink: 0;
+    }
+    
+    .title {
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+    }
+    
+    .toggle-area {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 12px;
+        color: #666;
+    }
+    
+    .switch {
+        width: 44px;
+        height: 22px;
+        background: #ccc;
+        border-radius: 11px;
+        position: relative;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    
+    .switch.on { background: #5DBB96; }
+    
+    .switch-knob {
+        width: 18px;
+        height: 18px;
+        background: white;
+        border-radius: 50%;
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        transition: 0.3s;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .switch.on .switch-knob { left: 24px; }
+    
+    .content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 24px;
+        font-size: 17px;
+        line-height: 2;
+        color: #333;
+        padding-bottom: 50px;
+    }
+    
+    .article-title {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 8px;
+        line-height: 1.4;
+    }
+    
+    .article-meta {
+        font-size: 12px;
+        color: #999;
+        margin-bottom: 24px;
+    }
+    
+    .content p { margin-bottom: 16px; }
+    
+    .hanja-word {
+        cursor: pointer;
+        padding: 2px 4px;
+        border-radius: 3px;
+        transition: 0.3s;
+        position: relative;
+        border-bottom: 1px dashed #aaa;
+    }
+    
+    .hanja-word:hover {
+        background: rgba(255, 246, 209, 0.7);
+        transform: translateY(-1px);
+    }
+    
+    .hanja-word.individual-active {
+        color: #d63031;
+        font-weight: 600;
+        border-bottom: none;
+        background: rgba(214, 48, 49, 0.1);
+    }
+    
+    .hanja-mode .hanja-word {
+        color: #d63031;
+        font-weight: 600;
+        border-bottom: none;
+    }
+    
+    .highlight {
+        background: linear-gradient(120deg, #FFF6D1 0%, #FFE55C 100%);
+        padding: 3px 6px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 600;
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(255, 229, 92, 0.4); }
+        50% { box-shadow: 0 0 0 8px rgba(255, 229, 92, 0); }
+    }
+    
+    .modal {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0,0,0,0.6);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        backdrop-filter: blur(3px);
+    }
+    
+    .modal.show { display: flex; }
+    
+    .modal-content {
+        background: white;
+        width: 340px;
+        max-width: 90vw;
+        border-radius: 20px;
+        padding: 28px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        animation: slideUp 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+    
+    @keyframes slideUp {
+        from { transform: translateY(100px) scale(0.9); opacity: 0; }
+        to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+    
+    .modal-header {
+        text-align: center;
+        margin-bottom: 24px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #f1f1f1;
+    }
+    
+    .modal-hanja {
+        font-size: 42px;
+        font-weight: bold;
+        color: #d63031;
+        margin-bottom: 8px;
+    }
+    
+    .modal-korean {
+        font-size: 16px;
+        color: #666;
+        font-weight: 500;
+    }
+    
+    .modal-body { margin-bottom: 24px; }
+    
+    .info-section { margin-bottom: 20px; }
+    
+    .info-label {
+        font-weight: bold;
+        color: #444;
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+    
+    .info-text {
+        color: #333;
+        font-size: 15px;
+        line-height: 1.6;
+        background: #f8f9fa;
+        padding: 12px;
+        border-radius: 8px;
+        border-left: 4px solid #5DBB96;
+    }
+    
+    .char-breakdown {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    
+    .char-item {
+        flex: 1;
+        min-width: 80px;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 12px 8px;
+        border-radius: 10px;
+        text-align: center;
+        font-size: 13px;
+    }
+    
+    .char-item .char {
+        font-size: 24px;
+        font-weight: bold;
+        color: #d63031;
+        display: block;
+        margin-bottom: 6px;
+    }
+    
+    .modal-footer {
+        display: flex;
+        gap: 12px;
+    }
+    
+    .btn {
+        flex: 1;
+        padding: 14px 20px;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.3s;
+        text-decoration: none;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
+    
+    .btn-naver {
+        background: linear-gradient(135deg, #03C75A 0%, #00B04F 100%);
+        color: white;
+    }
+    
+    .btn-close {
+        background: #f1f3f4;
+        color: #5f6368;
+    }
+    
+    .nav {
+        height: 70px;
+        background: #FDFBF7;
+        border-top: 1px solid #e0e0e0;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-shrink: 0;
+    }
+    
+    .nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        font-size: 12px;
+        color: #999;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    
+    .nav-item:first-child { color: #333; }
+    .nav-item:hover { color: #5DBB96; }
+    
+    .developer-credit {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(253, 251, 247, 0.95);
+        text-align: center;
+        padding: 8px;
+        font-size: 11px;
+        color: #666;
+        border-top: 1px solid #eee;
+        z-index: 1001;
+    }
+    
+    .developer-credit a {
+        color: #5DBB96;
+        text-decoration: none;
+    }
+</style>
+</head>
+<body>
+
+<div class="phone">
+    <div class="header">
+        <div class="title">Text & Hanja</div>
+        <div class="toggle-area">
+            <span>전체 한자 변환</span>
+            <div class="switch" id="toggleBtn">
+                <div class="switch-knob"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="content" id="mainContent">
+        <div class="article-title">
+            디지털 시대의 <span class="highlight" onclick="showDetail('문해력')">문해력</span>,<br>
+            우리가 놓치고 있는 것들
+        </div>
+        <div class="article-meta">2024년 3월 · Prof. KIMJUA</div>
+        
+        <p>
+            현대 <span class="hanja-word" data-korean="사회" data-hanja="社會" onclick="toggleWord(this)">사회</span>에서 
+            <span class="hanja-word" data-korean="정보" data-hanja="情報" onclick="toggleWord(this)">정보</span>의 
+            <span class="hanja-word" data-korean="홍수" data-hanja="洪水" onclick="toggleWord(this)">홍수</span>는 
+            <span class="hanja-word" data-korean="역설적" data-hanja="逆說的" onclick="toggleWord(this)">역설적</span>으로 깊이 있는 
+            <span class="hanja-word" data-korean="사고" data-hanja="思考" onclick="toggleWord(this)">사고</span>를 
+            방해하곤 합니다. 우리는 매일 수많은 텍스트를 마주하지만, 그것을 
+            <span class="hanja-word" data-korean="진정" data-hanja="眞正" onclick="toggleWord(this)">진정</span>으로 
+            <span class="hanja-word" data-korean="소화" data-hanja="消化" onclick="toggleWord(this)">소화</span>하고 있는지에 대해서는 
+            <span class="hanja-word" data-korean="의문" data-hanja="疑問" onclick="toggleWord(this)">의문</span>이 남습니다.
+        </p>
+        
+        <p>
+            특히 <span class="hanja-word" data-korean="최근" data-hanja="最近" onclick="toggleWord(this)">최근</span> 
+            <span class="hanja-word" data-korean="교육" data-hanja="教育" onclick="toggleWord(this)">교육</span>계와 
+            <span class="hanja-word" data-korean="학계" data-hanja="學界" onclick="toggleWord(this)">학계</span>에서 
+            <span class="hanja-word" data-korean="화두" data-hanja="話頭" onclick="toggleWord(this)">화두</span>가 되고 있는 것은 바로 
+            문해력의 <span class="hanja-word" data-korean="저하" data-hanja="低下" onclick="toggleWord(this)">저하</span> 
+            <span class="hanja-word" data-korean="문제" data-hanja="問題" onclick="toggleWord(this)">문제</span>입니다. 
+            단순히 글자를 읽을 줄 아는 것을 넘어, 텍스트의 
+            <span class="hanja-word" data-korean="이면" data-hanja="裏面" onclick="toggleWord(this)">이면</span>에 담긴 
+            <span class="hanja-word" data-korean="맥락" data-hanja="脈絡" onclick="toggleWord(this)">맥락</span>과 저자의 
+            <span class="hanja-word" data-korean="의도" data-hanja="意圖" onclick="toggleWord(this)">의도</span>를 파악하는 
+            <span class="hanja-word" data-korean="능력" data-hanja="能力" onclick="toggleWord(this)">능력</span>은 점차 
+            <span class="hanja-word" data-korean="희석" data-hanja="稀釋" onclick="toggleWord(this)">희석</span>되고 있습니다.
+        </p>
+        
+        <p>
+            <span class="hanja-word" data-korean="한자어" data-hanja="漢字語" onclick="toggleWord(this)">한자어</span>에 대한 
+            <span class="hanja-word" data-korean="이해" data-hanja="理解" onclick="toggleWord(this)">이해</span> 
+            <span class="hanja-word" data-korean="부족" data-hanja="不足" onclick="toggleWord(this)">부족</span>은 이러한 
+            <span class="hanja-word" data-korean="현상" data-hanja="現象" onclick="toggleWord(this)">현상</span>을 
+            <span class="hanja-word" data-korean="가속화" data-hanja="加速化" onclick="toggleWord(this)">가속화</span>합니다. 
+            우리말 <span class="hanja-word" data-korean="어휘" data-hanja="語彙" onclick="toggleWord(this)">어휘</span>의 
+            <span class="hanja-word" data-korean="상당수" data-hanja="相當數" onclick="toggleWord(this)">상당수</span>가 
+            한자어에 뿌리를 두고 있음에도 불구하고, 
+            <span class="hanja-word" data-korean="표음문자" data-hanja="表音文字" onclick="toggleWord(this)">표음문자</span>인 
+            한글 <span class="hanja-word" data-korean="전용" data-hanja="專用" onclick="toggleWord(this)">전용</span> 
+            <span class="hanja-word" data-korean="표기" data-hanja="表記" onclick="toggleWord(this)">표기</span>가 
+            <span class="hanja-word" data-korean="정착" data-hanja="定着" onclick="toggleWord(this)">정착</span>되면서 
+            <span class="hanja-word" data-korean="표의문자" data-hanja="表意文字" onclick="toggleWord(this)">표의문자</span>로서의 
+            <span class="hanja-word" data-korean="의미" data-hanja="意味" onclick="toggleWord(this)">의미</span> 
+            <span class="hanja-word" data-korean="연결" data-hanja="連結" onclick="toggleWord(this)">연결</span>고리가 약해진 것입니다.
+        </p>
+    </div>
+    
+    <div class="nav">
+        <div class="nav-item">🏠<br>홈</div>
+        <div class="nav-item">📚<br>내 텍스트</div>
+        <div class="nav-item">📝<br>단어장</div>
+        <div class="nav-item">⚙️<br>설정</div>
+    </div>
+</div>
+
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-hanja" id="modalHanja">文解力</div>
+            <div class="modal-korean" id="modalKorean">문해력</div>
+        </div>
+        
+        <div class="modal-body">
+            <div class="info-section">
+                <div class="info-label">📖 뜻풀이</div>
+                <div class="info-text" id="modalMeaning">글을 읽고 이해하는 능력</div>
+            </div>
+            
+            <div class="info-section">
+                <div class="info-label">🔤 한자 어원</div>
+                <div class="char-breakdown" id="charBreakdown">
+                    <div class="char-item">
+                        <span class="char">文</span>
+                        <span>글 문</span>
+                    </div>
+                    <div class="char-item">
+                        <span class="char">解</span>
+                        <span>풀 해</span>
+                    </div>
+                    <div class="char-item">
+                        <span class="char">力</span>
+                        <span>힘 력</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="modal-footer">
+            <a class="btn btn-naver" id="naverBtn" href="https://hanja.dict.naver.com/search?query=文解力" target="_blank">
+                🔍 네이버 사전 검색
+            </a>
+            <button class="btn btn-close" onclick="closeModal()">닫기</button>
+        </div>
+    </div>
+</div>
+
+<div class="developer-credit">
+    Developed by <strong>Prof. KIMJUA (김주아)</strong> · 
+    <a href="mailto:jua1225@naver.com">jua1225@naver.com</a> · 
+    국민대학교 중국인문사회연구소
+</div>
+
+<script>
+    const hanjaDB = {
+        '사회': { hanja: '社會', meaning: '사람들이 모여 이루는 집단', chars: [{c:'社',r:'모임 사'},{c:'會',r:'모일 회'}] },
+        '정보': { hanja: '情報', meaning: '어떤 사실이나 상황에 대한 소식이나 자료', chars: [{c:'情',r:'뜻 정'},{c:'報',r:'알릴 보'}] },
+        '홍수': { hanja: '洪水', meaning: '큰 물이 넘치는 것', chars: [{c:'洪',r:'큰 홍'},{c:'水',r:'물 수'}] },
+        '역설적': { hanja: '逆說的', meaning: '반대로 말하는 성질', chars: [{c:'逆',r:'거스를 역'},{c:'說',r:'말씀 설'},{c:'的',r:'~적 적'}] },
+        '사고': { hanja: '思考', meaning: '생각하고 판단하는 정신적 작용', chars: [{c:'思',r:'생각 사'},{c:'考',r:'생각 고'}] },
+        '진정': { hanja: '眞正', meaning: '참되고 올바름', chars: [{c:'眞',r:'참 진'},{c:'正',r:'바를 정'}] },
+        '소화': { hanja: '消化', meaning: '녹여서 흡수함', chars: [{c:'消',r:'사라질 소'},{c:'化',r:'될 화'}] },
+        '의문': { hanja: '疑問', meaning: '의심스럽게 여겨 묻는 것', chars: [{c:'疑',r:'의심 의'},{c:'問',r:'물을 문'}] },
+        '최근': { hanja: '最近', meaning: '가장 가까운 때', chars: [{c:'最',r:'가장 최'},{c:'近',r:'가까울 근'}] },
+        '교육': { hanja: '教育', meaning: '지식과 기술을 가르쳐 기르는 것', chars: [{c:'教',r:'가르칠 교'},{c:'育',r:'기를 육'}] },
+        '학계': { hanja: '學界', meaning: '학문을 연구하는 사람들의 사회', chars: [{c:'學',r:'배울 학'},{c:'界',r:'지경 계'}] },
+        '화두': { hanja: '話頭', meaning: '이야기의 첫머리, 주된 화제', chars: [{c:'話',r:'말씀 화'},{c:'頭',r:'머리 두'}] },
+        '저하': { hanja: '低下', meaning: '정도가 낮아지고 떨어짐', chars: [{c:'低',r:'낮을 저'},{c:'下',r:'아래 하'}] },
+        '문제': { hanja: '問題', meaning: '해결하거나 논의해야 할 대상', chars: [{c:'問',r:'물을 문'},{c:'題',r:'제목 제'}] },
+        '이면': { hanja: '裏面', meaning: '안쪽 면', chars: [{c:'裏',r:'안 리'},{c:'面',r:'낯 면'}] },
+        '맥락': { hanja: '脈絡', meaning: '사물이 서로 이어져 있는 관계나 연결', chars: [{c:'脈',r:'혈맥 맥'},{c:'絡',r:'이을 락'}] },
+        '의도': { hanja: '意圖', meaning: '무엇을 하고자 하는 생각이나 계획', chars: [{c:'意',r:'뜻 의'},{c:'圖',r:'꾀할 도'}] },
+        '능력': { hanja: '能力', meaning: '어떤 일을 해낼 수 있는 힘', chars: [{c:'能',r:'능할 능'},{c:'力',r:'힘 력'}] },
+        '희석': { hanja: '稀釋', meaning: '묽게 함, 본래의 성질이 약해짐', chars: [{c:'稀',r:'드물 희'},{c:'釋',r:'풀 석'}] },
+        '한자어': { hanja: '漢字語', meaning: '한자로 이루어진 말', chars: [{c:'漢',r:'한수 한'},{c:'字',r:'글자 자'},{c:'語',r:'말씀 어'}] },
+        '이해': { hanja: '理解', meaning: '사물의 이치나 내용을 깨달아 앎', chars: [{c:'理',r:'다스릴 리'},{c:'解',r:'풀 해'}] },
+        '부족': { hanja: '不足', meaning: '모자람', chars: [{c:'不',r:'아니 불'},{c:'足',r:'발 족'}] },
+        '현상': { hanja: '現象', meaning: '실제로 나타나는 모양이나 상태', chars: [{c:'現',r:'나타날 현'},{c:'象',r:'형상 상'}] },
+        '가속화': { hanja: '加速化', meaning: '속도가 점점 빨라지게 됨', chars: [{c:'加',r:'더할 가'},{c:'速',r:'빠를 속'},{c:'化',r:'될 화'}] },
+        '어휘': { hanja: '語彙', meaning: '한 언어가 가지고 있는 단어의 집합', chars: [{c:'語',r:'말씀 어'},{c:'彙',r:'모을 휘'}] },
+        '상당수': { hanja: '相當數', meaning: '꽤 많은 수', chars: [{c:'相',r:'서로 상'},{c:'當',r:'마땅 당'},{c:'數',r:'셀 수'}] },
+        '표음문자': { hanja: '表音文字', meaning: '소리를 나타내는 문자', chars: [{c:'表',r:'겉 표'},{c:'音',r:'소리 음'},{c:'文',r:'글월 문'},{c:'字',r:'글자 자'}] },
+        '전용': { hanja: '專用', meaning: '오직 그것만 씀', chars: [{c:'專',r:'오로지 전'},{c:'用',r:'쓸 용'}] },
+        '표기': { hanja: '表記', meaning: '글자나 기호로 적어 나타냄', chars: [{c:'表',r:'겉 표'},{c:'記',r:'기록할 기'}] },
+        '정착': { hanja: '定着', meaning: '자리를 잡음', chars: [{c:'定',r:'정할 정'},{c:'着',r:'붙을 착'}] },
+        '표의문자': { hanja: '表意文字', meaning: '뜻을 나타내는 문자', chars: [{c:'表',r:'겉 표'},{c:'意',r:'뜻 의'},{c:'文',r:'글월 문'},{c:'字',r:'글자 자'}] },
+        '의미': { hanja: '意味', meaning: '말이나 글이 지닌 뜻과 가치', chars: [{c:'意',r:'뜻 의'},{c:'味',r:'맛 미'}] },
+        '연결': { hanja: '連結', meaning: '서로 이어서 맺음', chars: [{c:'連',r:'이을 연'},{c:'結',r:'맺을 결'}] },
+        '문해력': { hanja: '文解力', meaning: '글을 읽고 이해하는 능력', chars: [{c:'文',r:'글 문'},{c:'解',r:'풀 해'},{c:'力',r:'힘 력'}] }
+    };
+    
+    const toggle = document.getElementById('toggleBtn');
+    const phone = document.querySelector('.phone');
+    const modal = document.getElementById('modal');
+    const modalHanja = document.getElementById('modalHanja');
+    const modalKorean = document.getElementById('modalKorean');
+    const modalMeaning = document.getElementById('modalMeaning');
+    const charBreakdown = document.getElementById('charBreakdown');
+    const naverBtn = document.getElementById('naverBtn');
+    
+    let currentWord = '';
+    let globalHanjaMode = false;
+    
+    // 전체 한자 변환 토글
+    toggle.addEventListener('click', function() {
+        this.classList.toggle('on');
+        phone.classList.toggle('hanja-mode');
+        globalHanjaMode = this.classList.contains('on');
+        
+        // 모든 한자어 단어 업데이트
+        document.querySelectorAll('.hanja-word').forEach(el => {
+            updateWordDisplay(el);
+        });
+    });
+    
+    // 개별 단어 토글 함수
+    function toggleWord(element) {
+        // 전체 모드가 아닐 때만 개별 토글 가능
+        if (!globalHanjaMode) {
+            element.classList.toggle('individual-active');
+        }
+        updateWordDisplay(element);
+        showDetail(element.dataset.korean);
+    }
+    
+    // 단어 표시 업데이트
+    function updateWordDisplay(element) {
+        const shouldShowHanja = globalHanjaMode || element.classList.contains('individual-active');
+        
+        if (shouldShowHanja) {
+            element.textContent = element.dataset.hanja;
+        } else {
+            element.textContent = element.dataset.korean;
+        }
+    }
+    
+    // 상세 정보 표시
+    function showDetail(word) {
+        const data = hanjaDB[word];
+        if (!data) return;
+        
+        currentWord = word;
+        modalHanja.textContent = data.hanja;
+        modalKorean.textContent = word;
+        modalMeaning.textContent = data.meaning;
+        
+        // 한자 분해 표시
+        charBreakdown.innerHTML = data.chars.map(c => 
+            `<div class="char-item">
+                <span class="char">${c.c}</span>
+                <span>${c.r}</span>
+            </div>`
+        ).join('');
+        
+        // 네이버 사전 링크 설정
+        naverBtn.href = `https://hanja.dict.naver.com/search?query=${encodeURIComponent(data.hanja)}`;
+        
+        modal.classList.add('show');
+    }
+    
+    // 모달 닫기
+    function closeModal() {
+        modal.classList.remove('show');
+    }
+    
+    // 모달 외부 클릭시 닫기
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) closeModal();
+    });
+    
+    // ESC 키로 모달 닫기
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal.classList.contains('show')) {
+            closeModal();
+        }
+    });
+</script>
+
+</body>
+</html>
